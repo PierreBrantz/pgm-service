@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.cinqc.maraichage.model.PackagingEntity;
 import com.cinqc.maraichage.model.RealQuantityEntity;
+import com.cinqc.maraichage.model.SeasonalityEntity;
+import com.cinqc.maraichage.model.SeasonalityProductEntity;
 import com.cinqc.maraichage.model.TheoreticalQuantityEntity;
 
 import lombok.Getter;
@@ -26,6 +28,8 @@ public class ProductDTO {
 	private List<TheoreticalQuantityEntity> quantities =  new ArrayList<>();
 	
 	private List<RealQuantityEntity> realQuantities = new ArrayList<>();
+	
+	private SeasonalityEntity season;
 	
 
 

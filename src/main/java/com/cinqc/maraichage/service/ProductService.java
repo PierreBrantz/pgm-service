@@ -29,12 +29,17 @@ public class ProductService {
 	RealQuantityRepository realQuantityRepository;
 	@Autowired
 	ProducerProductRepository producerProductRepository;
+	@Autowired
+	SeasonalityService seasonalityService;
 
 	public Iterable<ProductDTO> findAllProducts() {
 		List<ProductDTO> products = new ArrayList<>();
-		for( ProductDTO product : MapperUtil.mapList(repository.findByOrderByNameAsc(), ProductDTO.class)) {
-			product.setRealQuantities(realQuantityRepository.findAllRealQuantityByProductId(product.getId()));
-			products.add(product);
+		List<ProductEntity> productEntities = repository.findByOrderByNameAsc();
+		for(ProductEntity productEntity : productEntities) {			
+			ProductDTO productDTO = MapperUtil.getModelMapperInstance().map(productEntity, ProductDTO.class);
+			productDTO.setRealQuantities(realQuantityRepository.findAllRealQuantityByProductId(productDTO.getId()));
+			productDTO.setSeason(seasonalityService.findCurrentSeasonality(productEntity));
+			products.add(productDTO);
 		}
 		return products;
 	}
@@ -53,7 +58,7 @@ public class ProductService {
 	}
 
 	public Iterable<RealProductDTO> findProductsByProducer(Long producerId){
-		
+
 		List<ProductEntity> products = repository.findByProducer(producerId);
 		List<ProductEntity> realProducts = new ArrayList<>();
 		for(ProductEntity product : products) {			
@@ -61,13 +66,13 @@ public class ProductService {
 			product.setRealQuantities(new HashSet<>(realQuantity));
 			product.setProducerId(producerId);
 			realProducts.add(product);
-			
-			
+
+
 		}
 		return MapperUtil.mapList(realProducts,RealProductDTO.class);
 	}
-	
-	
+
+
 
 	public ProductDTO updateProduct(long id, ProductDTO newProduct){
 		ProductDTO product = findProductById(id);

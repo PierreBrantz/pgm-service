@@ -47,6 +47,9 @@ public class ProductEntity {
 	@ManyToMany(mappedBy = "products")
     private Set<ProducerEntity> producers = new HashSet<>();
 	
+	@OneToMany(mappedBy = "product")
+	private Set<SeasonalityProductEntity> seasonalityProducts;
+	
 
 	private transient Set<RealQuantityEntity> realQuantities;
 	
