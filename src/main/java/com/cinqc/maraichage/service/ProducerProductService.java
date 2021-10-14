@@ -1,34 +1,21 @@
 package com.cinqc.maraichage.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.cinqc.maraichage.repository.ProducerProductRepository;
 
-
+@Service
 public class ProducerProductService {
 
+	@Autowired
 	ProducerProductRepository repository;
 	
-
-	ProducerService producerService;
-	
-	
-	ProductService productService;
-/**
-	public ProducerDTO addProduct(Long producerID, Long productId) {
-		
-	//	ProducerProductEntity pp = new ProducerProductEntity();
-	//	pp.setProducerId(producerID);
-	//	pp.setProductId(productId);
+	public void deleteProduct(long producerId, long productId) {
+		repository.deleteProduct(producerId, productId);
+	}
 	
 
-	
-		return MapperUtil.getModelMapperInstance().map(repository.save(pp), ProducerDTO.class);
-	
-	}
-	*/
-/*	
-	public ProducerProductEntity findByProducerIdAndProductId(Long producerId, Long productId) {
-		return repository.findByProducerIdAndProductId(producerId, productId);
-	}
-	*/
+
 
 }

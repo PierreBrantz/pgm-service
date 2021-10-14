@@ -28,7 +28,7 @@ public class ProductEntity {
 	@Column(name = "id")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
 	@Column(name = "name")
 	private String name;
@@ -43,7 +43,7 @@ public class ProductEntity {
 	@OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="product_id")	
 	private Set<TheoreticalQuantityEntity> quantities;
-	
+
 	@ManyToMany(mappedBy = "products")
     private Set<ProducerEntity> producers = new HashSet<>();
 	
@@ -54,6 +54,30 @@ public class ProductEntity {
 	private transient Set<RealQuantityEntity> realQuantities;
 	
 	private transient long producerId;
-
+	
+	@Column(name = "conditioning")
+	private String conditioning;
+	
+	@Column(name = "nb_by_conditioning")
+	private Integer nbByConditioning;
+	
+	@Column(name = "weight")
+	private Float weight;
+	
+	@Column(name = "unit_for_sale")
+	private String unitForSale;
+	
+	@Column(name = "conditioning_by_vegetable")
+	private String conditioningByVegetable;
+	
+	@Column(name = "percent_brut_conditioning")
+	private String percentBrutConditioning;
+	
+	@Column(name = "work_cost_by_conditioning")
+	private String workCostByConditioning;
+	
+	@Column(name = "delivery_time_limit")
+	private String deliveryTimeLimit;
+	
 	
 }

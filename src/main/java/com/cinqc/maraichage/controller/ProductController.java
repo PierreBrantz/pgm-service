@@ -1,5 +1,6 @@
 package com.cinqc.maraichage.controller;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +41,8 @@ public class ProductController {
 	
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ProductDTO findProductById(@PathVariable Long id) {
-		return service.findProductById(id);
+	public Iterable<ProductDTO> findProductId(@PathVariable Long id) {
+		return Arrays.asList(service.findProductById(id));
 	}
 	
 	@GetMapping("/name/{name}")
@@ -61,7 +62,9 @@ public class ProductController {
 	        produces = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody ProductDTO updateProduct( @RequestParam Map<String, String> body, @PathVariable Long id) {	
 		final GsonBuilder builder = new GsonBuilder();
-	    final Gson gson = builder.create();
+
+	    final Gson gson = builder.setDateFormat("yyyy-MM-dd").create();
+	    
 	    ProductDTO product = gson.fromJson(body.keySet().iterator().next(), ProductDTO.class);
 	
 		return service.updateProduct(id, product);

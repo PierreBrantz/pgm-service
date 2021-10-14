@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cinqc.maraichage.dto.ProducerDTO;
+import com.cinqc.maraichage.service.ProducerProductService;
 import com.cinqc.maraichage.service.ProducerService;
+import com.cinqc.maraichage.util.MapperUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -27,12 +29,20 @@ public class ProducerController {
 
 	@Autowired
 	ProducerService service;
+	@Autowired
+	ProducerProductService ppService;
 	
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public Iterable<ProducerDTO> findAllProducers() {
 		return service.findAllProducers();
+	}
+	
+	@GetMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public ProducerDTO findProducerId(@PathVariable Long id) {
+		return MapperUtil.getModelMapperInstance().map(service.findProducerById(id), ProducerDTO.class);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE}, 
@@ -45,8 +55,23 @@ public class ProducerController {
 		return service.addProducer(producer);
 	}
 	
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public void deleteProducer(@PathVariable String id) {	
+		  service.deleteById(Long.parseLong(id));
+		  
+		 
+	}
+	
 	@RequestMapping(value = "/{producerId}/product/{productId}", method = RequestMethod.POST)
 	public @ResponseBody ProducerDTO addProduct(@PathVariable String producerId, @PathVariable String productId) {	
 		return service.addProduct(Long.parseLong(producerId), Long.parseLong(productId));
+	}
+	
+
+	@RequestMapping(value = "/{producerId}/product/{productId}", method = RequestMethod.DELETE)
+	public void deleteProduct(@PathVariable String producerId, @PathVariable String productId) {	
+		  ppService.deleteProduct(Long.parseLong(producerId), Long.parseLong(productId));
+		  
+		 
 	}
 }

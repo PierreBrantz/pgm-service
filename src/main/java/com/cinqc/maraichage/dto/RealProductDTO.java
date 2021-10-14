@@ -26,5 +26,7 @@ public class RealProductDTO {
 	
 	private long producerId;
 	
+	private float[] seasons;
+	
 
 }

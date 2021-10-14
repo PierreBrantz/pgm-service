@@ -27,7 +27,7 @@ public class TheoreticalQuantityEntity {
 	private int yearOfReference;
 	
 	@Column(name = "product_id")
-	private long productId;
+	private Long productId;
 
 	@Column
 	private BigDecimal quantity1; 

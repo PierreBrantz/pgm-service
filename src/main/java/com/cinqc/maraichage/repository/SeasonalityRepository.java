@@ -7,5 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 import com.cinqc.maraichage.model.SeasonalityEntity;
 
 public interface SeasonalityRepository extends CrudRepository<SeasonalityEntity, Long>{ 
-	List<SeasonalityEntity> findByOrderByNameAsc();
+	List<SeasonalityEntity> findByOrderByIdAsc();
 }

@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -27,11 +28,9 @@ public class SeasonalityProductEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(name = "product_id")
-	private long productId;
-	
 	@Column(name = "seasonality_id")
-	private long seasonalityId;
+	private long seasonalityId;	
+
 	
 	@JsonIgnore
 	@ManyToOne
@@ -43,9 +42,11 @@ public class SeasonalityProductEntity {
 	@JoinColumn(name = "seasonality_id", insertable=false, updatable =false) 
 	private SeasonalityEntity seasonality;
 	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd" , timezone="Europe/Zagreb" )
 	@Column(name = "start_date")
 	private Date startDate;
 	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone="Europe/Zagreb" )
 	@Column(name = "end_date")
 	private Date endDate;
 }
