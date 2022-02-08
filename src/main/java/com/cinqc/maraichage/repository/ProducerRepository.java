@@ -9,6 +9,8 @@ import com.cinqc.maraichage.model.ProducerEntity;
 public interface ProducerRepository extends CrudRepository<ProducerEntity, Long>{ 
 	List<ProducerEntity> findByOrderByAbrAsc();
 	
+	ProducerEntity findByAbr(String abr);
+	
 
 
 }

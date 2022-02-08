@@ -9,11 +9,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cinqc.maraichage.dto.ProductDTO;
-import com.cinqc.maraichage.dto.RealProductDTO;
 import com.cinqc.maraichage.model.ProducerEntity;
 import com.cinqc.maraichage.model.ProducerProductEntity;
 import com.cinqc.maraichage.model.ProductEntity;
@@ -28,6 +29,7 @@ import com.cinqc.maraichage.util.MapperUtil;
 
 
 @Service
+@Transactional
 public class ProductService {
 
 	@Autowired
@@ -40,18 +42,26 @@ public class ProductService {
 	SeasonalityService seasonalityService;
 	@Autowired
 	SeasonalityProductService  seasonalityProductService;
+	@Autowired
+	ProducerService producerService; 
 
 
-	public Iterable<ProductDTO> findAllProducts() {
-		List<ProductDTO> products = new ArrayList<>();
-		List<ProductEntity> productEntities = repository.findByOrderByNameAsc();
-		for(ProductEntity productEntity : productEntities) {			
-			ProductDTO productDTO = MapperUtil.getModelMapperInstance().map(productEntity, ProductDTO.class);
-			productDTO.setRealQuantities(realQuantityRepository.findAllRealQuantityByProductId(productDTO.getId()));
-			productDTO.setCurrentSeason(seasonalityService.findCurrentSeasonality(productEntity));
-						products.add(productDTO);
+	public Iterable<ProductDTO> findAllProducts() {	
+		List<ProductDTO> ret = new ArrayList<>();
+		List<ProductEntity> products = repository.findByOrderByNameAsc();
+		for(ProductEntity product : products) {
+			Set<ProducerEntity> producers =new HashSet<>();			
+			for(ProducerEntity producer : product.getProducers()) {				
+				producer.setRealQuantity(realQuantityRepository.findRealQuantity(producerProductRepository.findByProducerIdAndProductId(producer.getId(), product.getId()).getId()));
+				producers.add(producer);
+			}
+			product.setProducers(producers);
+
+			ProductDTO productDTO = MapperUtil.getModelMapperInstance().map(product, ProductDTO.class);
+			productDTO.setRealQuantities(realQuantityRepository.findAllRealQuantityByProductId(product.getId()));			
+			ret.add(productDTO);		
 		}
-		return products;
+		return ret;
 	}
 
 	public Iterable<ProductDTO> findProductsByName(String in){
@@ -63,12 +73,12 @@ public class ProductService {
 		ProductDTO productDTO = MapperUtil.getModelMapperInstance().map(productEntity, ProductDTO.class);
 		productDTO.setRealQuantities(realQuantityRepository.findAllRealQuantityByProductId(productDTO.getId()));
 
-		productDTO.setCurrentSeason(seasonalityService.findCurrentSeasonality(productEntity));
+		//	productDTO.setCurrentSeason(seasonalityService.findCurrentSeasonality(productEntity));
 
 		List<ProducerEntity> producers = new ArrayList<>();
 		for(ProducerEntity producer : productDTO.getProducers()) {
 			ProducerProductEntity pp = producerProductRepository.findByProducerIdAndProductId(producer.getId(),productDTO.getId());
-			producer.setRealQuantities(realQuantityRepository.findRealQuantity(pp.getId()));
+			producer.setRealQuantity(realQuantityRepository.findRealQuantity(pp.getId()));
 			producers.add(producer);
 		}
 		Collections.sort(producers, new Comparator<ProducerEntity>() {
@@ -79,47 +89,40 @@ public class ProductService {
 		});
 
 
-
-		List<SeasonalityProductEntity> seasonalityProductEntities = seasonalityProductService.findSeasonalityProductsByProduct(productEntity);
-		Collections.sort(seasonalityProductEntities, new Comparator<SeasonalityProductEntity>() {
-			@Override
-			public int compare(SeasonalityProductEntity p1, SeasonalityProductEntity p2) {
-
-				return Long.valueOf(p1.getSeasonalityId()).compareTo(Long.valueOf(p2.getSeasonalityId()));
-			}
-		});
-		productDTO.setSeasonInformation(seasonalityProductEntities);
-
 		productDTO.setProducers(producers);
-		productDTO.setSeasons(seasonalityService.getSeasonalityByMonth(productEntity));
+		//	productDTO.setSeasons(seasonalityService.getSeasonalityByMonth(productEntity));
 
 		return productDTO;
 	}
 
 
-	public Iterable<RealProductDTO> findProductsByProducer(Long producerId){
+	public Iterable<ProductDTO> findProductsByProducer(Long producerId){
 
 		List<ProductEntity> products = repository.findByProducer(producerId);
-		List<ProductEntity> realProducts = new ArrayList<>();
+		List<ProductDTO> realProducts = new ArrayList<>();
 
-
-		for(ProductEntity product : products) {			
-			List<RealQuantityEntity> realQuantity = realQuantityRepository.findRealQuantity(producerProductRepository.findByProducerIdAndProductId(producerId, product.getId()).getId());
-			product.setRealQuantities(new HashSet<>(realQuantity));
-			product.setProducerId(producerId);
-			realProducts.add(product);
-
+		for(ProductEntity product : products) {					
+			RealQuantityEntity realQuantity = realQuantityRepository.findRealQuantity(producerProductRepository.findByProducerIdAndProductId(producerId, product.getId()).getId());
+			ProductDTO productDTO = MapperUtil.getModelMapperInstance().map(product, ProductDTO.class);
+			productDTO.setCurrentRealQuantity(realQuantity);			
+			realProducts.add(productDTO);
 
 		}
-		return MapperUtil.mapList(realProducts,RealProductDTO.class);
+		return realProducts;
 	}
+
+	public Iterable<ProductDTO> findProductsByProducerAbr(String abr){
+		return  findProductsByProducer(producerService.findProducerByAbr(abr).getId());
+	}
+
+
 
 
 
 	public ProductDTO updateProduct(long id, ProductDTO newProduct){
 		ProductDTO product = findProductById(id);
 		if(newProduct.getQuantities() != null) {		
-			newProduct.getQuantities().get(0).setProductId(product.getId());
+			newProduct.getQuantities().get(0).setProductId(id);
 			product.setQuantities(newProduct.getQuantities());
 
 		}
@@ -127,49 +130,69 @@ public class ProductService {
 
 
 		ProductEntity productEntity = MapperUtil.getModelMapperInstance().map(product, ProductEntity.class);
-		Set<SeasonalityProductEntity> spEntitiesToChange = new HashSet<>();
-		if(newProduct.getSeasonInformation() != null && newProduct.getSeasonInformation().size()>0) {
-
-			List<SeasonalityProductEntity> spEntities = seasonalityProductService.findSeasonalityProductsByProduct(productEntity);
-			if(spEntities != null && spEntities.size()>0) {
-				for(SeasonalityProductEntity spEntity : spEntities) {
-					if(spEntity.getSeasonalityId() == 1) {
-						spEntity.setStartDate(newProduct.getSeasonInformation().get(0).getStartDate());
-						spEntity.setEndDate(newProduct.getSeasonInformation().get(0).getEndDate());
-					}
-					if(spEntity.getSeasonalityId() == 2) {
-						spEntity.setStartDate(newProduct.getSeasonInformation().get(1).getStartDate() );
-						spEntity.setEndDate(newProduct.getSeasonInformation().get(1).getEndDate() );
-					}
-					if(spEntity.getSeasonalityId() == 3) {
-						spEntity.setStartDate(newProduct.getSeasonInformation().get(2).getStartDate());
-						spEntity.setEndDate(newProduct.getSeasonInformation().get(2).getEndDate());
-					}
-					spEntitiesToChange.add(spEntity);
-				}
-			}
-
-		}
-		productEntity = MapperUtil.getModelMapperInstance().map(product, ProductEntity.class);
-		productEntity.setSeasonalityProducts(spEntitiesToChange);
 
 		return MapperUtil.getModelMapperInstance().map(repository.save(productEntity),ProductDTO.class);
 	}
 
-	public RealProductDTO updateRealProduct(Long productId, Long producerId, RealProductDTO newProduct) {
-		RealQuantityEntity realQuantity = newProduct.getRealQuantities().get(0);
-		realQuantity.setProducerProductId(producerProductRepository.findByProducerIdAndProductId(producerId,productId).getId());
+	public RealQuantityEntity updateRealProduct(Long productId, Long producerId, ProductDTO newProduct) {
 
-		RealProductDTO realProductDTO = MapperUtil.getModelMapperInstance().map(realQuantityRepository.save(realQuantity),RealProductDTO.class);
-		realProductDTO.setSeasons(seasonalityService.getSeasonalityByMonth(repository.findById(productId).get()));
-		return realProductDTO;
 
+		ProducerProductEntity pp = producerProductRepository.findByProducerIdAndProductId(producerId, productId);
+		RealQuantityEntity rqe = realQuantityRepository.findRealQuantity(pp.getId());
+		if(rqe != null) {
+			rqe.setQuantity1(newProduct.getCurrentRealQuantity().getQuantity1());
+			rqe.setQuantity2(newProduct.getCurrentRealQuantity().getQuantity2());
+			rqe.setQuantity3(newProduct.getCurrentRealQuantity().getQuantity3());
+			rqe.setQuantity4(newProduct.getCurrentRealQuantity().getQuantity4());
+			rqe.setQuantity5(newProduct.getCurrentRealQuantity().getQuantity5());
+			rqe.setQuantity6(newProduct.getCurrentRealQuantity().getQuantity6());
+			rqe.setQuantity7(newProduct.getCurrentRealQuantity().getQuantity7());
+			rqe.setQuantity8(newProduct.getCurrentRealQuantity().getQuantity8());
+			rqe.setQuantity9(newProduct.getCurrentRealQuantity().getQuantity9());
+			rqe.setQuantity10(newProduct.getCurrentRealQuantity().getQuantity10());
+			rqe.setQuantity11(newProduct.getCurrentRealQuantity().getQuantity11());
+			rqe.setQuantity12(newProduct.getCurrentRealQuantity().getQuantity12());			
+			return realQuantityRepository.save(rqe);
+		}
+		else {
+
+			RealQuantityEntity realProduct = newProduct.getCurrentRealQuantity();
+			realProduct.setProducerProductId(pp.getId());
+			return realQuantityRepository.save(realProduct);
+		}
+
+
+	}
+
+	public void updateProducts(List<ProductDTO> products) {
+		for(ProductDTO p : products) {
+			if(p.getSeasonalityProduct() == null) {
+				p.setSeasonalityProduct(new SeasonalityProductEntity());
+			}
+		}
+
+		repository.saveAll(MapperUtil.mapList(products, ProductEntity.class));
 	}
 
 
 	public static <T> List<T> toList(final Iterable<T> iterable) {
 		return StreamSupport.stream(iterable.spliterator(), false)
 				.collect(Collectors.toList());
+	}
+
+	public ProductDTO addProduct(ProductDTO product) {
+		return MapperUtil.getModelMapperInstance().map(repository.save(MapperUtil.getModelMapperInstance().map(product, ProductEntity.class)),ProductDTO.class);
+	}
+
+	public void deleteById(long productId) {
+		repository.deleteById(productId);
+	}
+
+	public void addProductWithName(String productName) {
+		ProductEntity product = new ProductEntity();
+		product.setName(productName);
+		repository.save(product);
+
 	}
 
 }

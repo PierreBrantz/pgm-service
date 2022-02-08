@@ -41,8 +41,14 @@ public class ProducerService {
 		return MapperUtil.getModelMapperInstance().map(repository.save(producer),ProducerDTO.class);
 	}
 	
+
+	
 	public void deleteById(long producerId) {
 		repository.deleteById(producerId);
+	}
+	
+	public ProducerEntity findProducerByAbr(String abr) {
+		return repository.findByAbr(abr);
 	}
 	
 	

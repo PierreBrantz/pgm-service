@@ -27,6 +27,8 @@ public class ProducerProductEntity {
 	
 	@Column(name = "producer_id")
 	private long producerId;
+	
+	
 
 	
 }

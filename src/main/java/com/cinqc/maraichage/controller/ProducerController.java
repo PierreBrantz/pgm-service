@@ -39,6 +39,12 @@ public class ProducerController {
 		return service.findAllProducers();
 	}
 	
+	@GetMapping("/abr/{abr}")
+	@ResponseStatus(HttpStatus.OK)
+	public ProducerDTO findProducerByAbr(@PathVariable String abr) {
+		return MapperUtil.getModelMapperInstance().map(service.findProducerByAbr(abr), ProducerDTO.class);
+	}
+	
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public ProducerDTO findProducerId(@PathVariable Long id) {
@@ -57,15 +63,15 @@ public class ProducerController {
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void deleteProducer(@PathVariable String id) {	
-		  service.deleteById(Long.parseLong(id));
-		  
-		 
+		  service.deleteById(Long.parseLong(id));		 
 	}
 	
 	@RequestMapping(value = "/{producerId}/product/{productId}", method = RequestMethod.POST)
 	public @ResponseBody ProducerDTO addProduct(@PathVariable String producerId, @PathVariable String productId) {	
 		return service.addProduct(Long.parseLong(producerId), Long.parseLong(productId));
 	}
+	
+
 	
 
 	@RequestMapping(value = "/{producerId}/product/{productId}", method = RequestMethod.DELETE)

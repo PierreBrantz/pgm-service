@@ -1,6 +1,8 @@
 package com.cinqc.maraichage.controller;
 
-import java.util.Arrays;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,10 +20,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cinqc.maraichage.dto.ProductDTO;
-import com.cinqc.maraichage.dto.RealProductDTO;
+import com.cinqc.maraichage.model.RealQuantityEntity;
 import com.cinqc.maraichage.service.ProductService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 
 
@@ -41,8 +45,13 @@ public class ProductController {
 	
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Iterable<ProductDTO> findProductId(@PathVariable Long id) {
-		return Arrays.asList(service.findProductById(id));
+	public ProductDTO findProductId(@PathVariable Long id) {
+		return service.findProductById(id);
+	}
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public void deleteProduct(@PathVariable String id) {	
+		  service.deleteById(Long.parseLong(id));		 
 	}
 	
 	@GetMapping("/name/{name}")
@@ -53,9 +62,16 @@ public class ProductController {
 	
 	@GetMapping("/producer/{producerId}")
 	@ResponseStatus(HttpStatus.OK)
-	public Iterable<RealProductDTO> findProductsByProducer(@PathVariable Long producerId){
+	public Iterable<ProductDTO> findProductsByProducer(@PathVariable Long producerId){
 
 		return service.findProductsByProducer(producerId);	
+	}
+	
+	@GetMapping("/producer/abr/{abr}")
+	@ResponseStatus(HttpStatus.OK)
+	public Iterable<ProductDTO> findProductsByProducer(@PathVariable String abr){
+
+		return service.findProductsByProducerAbr(abr);	
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE}, 
@@ -70,13 +86,29 @@ public class ProductController {
 		return service.updateProduct(id, product);
 	}
 	
-	@RequestMapping(value = "/{productId}/producer/{producerId}", method = RequestMethod.PUT, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE}, 
-	        produces = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody RealProductDTO updateRealProduct( @RequestParam Map<String, String> body, @PathVariable Long productId, @PathVariable Long producerId) {	
+	@RequestMapping(value = "/{productId}/producer/{producerId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody RealQuantityEntity updateRealProduct( @RequestBody String body, @PathVariable Long productId, @PathVariable Long producerId) {	
 		final GsonBuilder builder = new GsonBuilder();
 	    final Gson gson = builder.create();
-	    RealProductDTO product = gson.fromJson(body.keySet().iterator().next(), RealProductDTO.class);
+	    Type listOfMyClassObject = new TypeToken<ProductDTO>() {}.getType();
+	    ProductDTO product = gson.fromJson(body, listOfMyClassObject);
 	
 		return service.updateRealProduct(productId, producerId, product);
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody void updateProducts(@RequestBody String body) {
+		final GsonBuilder builder = new GsonBuilder();
+	    final Gson gson = builder.create();
+	    Type listOfMyClassObject = new TypeToken<ArrayList<ProductDTO>>() {}.getType();
+	    
+	    List<ProductDTO> products = gson.fromJson(body, listOfMyClassObject);
+	    
+		service.updateProducts(products);
+	}
+	
+	@RequestMapping(value = "/name/{productName}", method = RequestMethod.POST)
+	public @ResponseBody void addNewProduct(@PathVariable String productName) {	
+		service.addProductWithName(productName);
 	}
 }

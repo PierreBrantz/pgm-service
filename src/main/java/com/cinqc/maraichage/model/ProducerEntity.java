@@ -71,8 +71,7 @@ public class ProducerEntity {
 	private String gsm;
 	
 	@JsonIgnore
-	@ManyToMany(cascade= {CascadeType.PERSIST,
-	        CascadeType.MERGE})
+	@ManyToMany(cascade= {CascadeType.PERSIST})
 	@JoinTable(
 	        name = "producer_product", 
 	        joinColumns = { @JoinColumn(name = "producer_id") }, 
@@ -81,6 +80,6 @@ public class ProducerEntity {
 	 private Set<ProductEntity> products = new HashSet<>();
 	
 	
-	private transient List<RealQuantityEntity> realQuantities;
+	private transient RealQuantityEntity realQuantity;
 
 }

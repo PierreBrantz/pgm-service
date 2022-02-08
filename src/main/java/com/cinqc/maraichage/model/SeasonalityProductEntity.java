@@ -1,17 +1,14 @@
 package com.cinqc.maraichage.model;
 
-import java.util.Date;
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -28,25 +25,50 @@ public class SeasonalityProductEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(name = "seasonality_id")
-	private long seasonalityId;	
+	@Column(name = "product_id")
+	private long productId;	
+	
+	@Column(name="january")
+	private Integer january;
+	
+	@Column(name="february")
+	private Integer february;
+	
+	@Column(name="march")
+	private Integer march;
+	
+	@Column(name="april")
+	private Integer april;
+	
+	@Column(name="may")
+	private Integer may;
+	
+	@Column(name="june")
+	private Integer june;
+	
+	@Column(name="july")
+	private Integer july;
+	
+	@Column(name="august")
+	private Integer august;
+	
+	@Column(name="september")
+	private Integer september;
+	
+	@Column(name="october")
+	private Integer october;
+	
+	@Column(name="november")
+	private Integer november;
+	
+	@Column(name="december")
+	private Integer december;
 
 	
 	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "product_id", insertable=false, updatable =false) 
+	@OneToOne(mappedBy = "seasonalityProduct", cascade = CascadeType.ALL)
 	private ProductEntity product;
 	
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "seasonality_id", insertable=false, updatable =false) 
-	private SeasonalityEntity seasonality;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd" , timezone="Europe/Zagreb" )
-	@Column(name = "start_date")
-	private Date startDate;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone="Europe/Zagreb" )
-	@Column(name = "end_date")
-	private Date endDate;
 }

@@ -6,8 +6,13 @@ import java.util.List;
 
 import com.cinqc.maraichage.model.PackagingEntity;
 import com.cinqc.maraichage.model.ProducerEntity;
+import com.cinqc.maraichage.model.ProducerProductEntity;
+import com.cinqc.maraichage.model.ProductFamilyEntity;
+import com.cinqc.maraichage.model.ProductLabelEntity;
+import com.cinqc.maraichage.model.ProductOriginEntity;
+import com.cinqc.maraichage.model.ProductTypeEntity;
+import com.cinqc.maraichage.model.ProductUnitEntity;
 import com.cinqc.maraichage.model.RealQuantityEntity;
-import com.cinqc.maraichage.model.SeasonalityEntity;
 import com.cinqc.maraichage.model.SeasonalityProductEntity;
 import com.cinqc.maraichage.model.TheoreticalQuantityEntity;
 
@@ -24,35 +29,56 @@ public class ProductDTO {
 
 	private PackagingEntity packaging;
 
-	private BigDecimal price;	
+	private BigDecimal price;		
 
 	private List<TheoreticalQuantityEntity> quantities =  new ArrayList<>();
 
+	private List<RealQuantityEntity> realQuantities =  new ArrayList<>();
 	
-	private List<RealQuantityEntity> realQuantities = new ArrayList<>();
+	private List<ProducerProductEntity> producerProducts = new ArrayList<>();
 
-	private SeasonalityEntity currentSeason;
+	private SeasonalityProductEntity seasonalityProduct =  new SeasonalityProductEntity();
 	
-	private List<SeasonalityProductEntity> seasonInformation;
-	
-	private float[] seasons;
-
 	private List<ProducerEntity> producers = new ArrayList<>();
 
-	private String conditioning;
+	private ProductTypeEntity productType;
 
-	private Integer nbByConditioning;
+	private ProductFamilyEntity productFamily;
+	
 
-	private Float weight;
+	private ProductUnitEntity productUnit;
+	
+	
+	private ProductLabelEntity productLabel;
+	
+	private String calibration;
+	
+	private String salesFormat;
+	
 
-	private String unitForSale;
+	private Long margin;
+	
 
-	private String conditioningByVegetable;
+	private Long nbByPackaging;
+	
+	
+	private ProductOriginEntity productOrigin;
+	
 
-	private String percentBrutConditioning;
+	private String barCode;
+	
 
-	private String workCostByConditioning;
+	private Boolean cap;
+	
+	private Boolean fragil;
+	
+	
+	private Long eshopId;
+	
 
-	private String deliveryTimeLimit;
+	private String remark;
+	
+	private RealQuantityEntity currentRealQuantity;
+
 
 }

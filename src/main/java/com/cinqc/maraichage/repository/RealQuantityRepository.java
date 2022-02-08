@@ -12,7 +12,7 @@ public interface RealQuantityRepository extends CrudRepository<RealQuantityEntit
 
 		
 	@Query(nativeQuery = true, value = "select rq.* from real_quantity rq where rq.producer_product_id = :ppId")
-	List<RealQuantityEntity> findRealQuantity(@Param("ppId") Long ppId);
+	RealQuantityEntity findRealQuantity(@Param("ppId") Long ppId);
 	
 	@Query(nativeQuery = true, value = "select rq.* from real_quantity rq inner join producer_product pp on rq.producer_product_id = pp.id where pp.product_id = :productId")
 	List<RealQuantityEntity> findAllRealQuantityByProductId(@Param("productId") Long productId);
