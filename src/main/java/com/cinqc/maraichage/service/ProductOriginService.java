@@ -29,4 +29,8 @@ public class ProductOriginService {
 		repository.saveAll(MapperUtil.mapList(productOrigins, ProductOriginEntity.class));
 	}
 	
+	public void deleteProductOrigin(Long id) {
+		repository.deleteById(id);
+	}
+	
 }

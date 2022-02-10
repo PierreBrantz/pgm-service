@@ -53,8 +53,6 @@ public class ProductTypeController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void deleteProductType(@PathVariable String id) {	
 		service.deleteProductType(Long.parseLong(id));
-		  
-		 
 	}
 	
 	

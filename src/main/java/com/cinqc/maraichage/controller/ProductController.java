@@ -3,7 +3,6 @@ package com.cinqc.maraichage.controller;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,7 +71,7 @@ public class ProductController {
 
 		return service.findProductsByProducerAbr(abr);	
 	}
-	
+/*	
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE}, 
 	        produces = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody ProductDTO updateProduct( @RequestParam Map<String, String> body, @PathVariable Long id) {	
@@ -85,7 +83,7 @@ public class ProductController {
 	
 		return service.updateProduct(id, product);
 	}
-	
+	*/
 	@RequestMapping(value = "/{productId}/producer/{producerId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody RealQuantityEntity updateRealProduct( @RequestBody String body, @PathVariable Long productId, @PathVariable Long producerId) {	
 		final GsonBuilder builder = new GsonBuilder();

@@ -29,4 +29,8 @@ public class PackagingService {
 		repository.saveAll(MapperUtil.mapList(packagings, PackagingEntity.class));
 	}
 	
+	public void deletePackaging(Long id) {
+		repository.deleteById(id);
+	}
+	
 }

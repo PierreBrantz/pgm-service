@@ -28,6 +28,10 @@ public class ProductFamilyService {
 	public void updateProductFamilies(List<ProductFamilyDTO> productFamilies) {
 		repository.saveAll(MapperUtil.mapList(productFamilies, ProductFamilyEntity.class));
 	}
+	
+	public void deleteProductFamily(Long id) {
+		repository.deleteById(id);
+	}
 
 	
 }

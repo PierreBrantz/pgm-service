@@ -28,4 +28,8 @@ public class ProductLabelService {
 	public void updateProductLabels(List<ProductLabelDTO> productLabels) {
 		repository.saveAll(MapperUtil.mapList(productLabels, ProductLabelEntity.class));
 	}
+	
+	public void deleteProductLabel(Long id) {
+		repository.deleteById(id);
+	}
 }
