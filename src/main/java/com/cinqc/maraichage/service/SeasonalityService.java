@@ -21,12 +21,16 @@ public class SeasonalityService {
 
 
 
-	public Iterable<SeasonalityDTO> findAllSeasons() {
+	public List<SeasonalityDTO> findAllSeasons() {
 		return MapperUtil.mapList(repository.findByOrderByIdAsc(), SeasonalityDTO.class);
 	}
 	
-	public void updateSeasons(List<SeasonalityDTO> seasons) {
-		repository.saveAll(MapperUtil.mapList(seasons, SeasonalityEntity.class));
+	public Iterable<SeasonalityEntity> updateSeasons(List<SeasonalityDTO> seasons) {
+		return repository.saveAll(MapperUtil.mapList(seasons, SeasonalityEntity.class));
+	}
+	
+	public void deleteSeason(Long id) {
+		repository.deleteById(id);
 	}
 	
 

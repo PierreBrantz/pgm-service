@@ -14,4 +14,5 @@ public class SeasonalityDTO {
 	
 
 	private float percent;
+
 }

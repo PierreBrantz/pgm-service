@@ -29,40 +29,40 @@ public class SeasonalityProductEntity {
 	private long productId;	
 	
 	@Column(name="january")
-	private Integer january;
+	private Integer january = 1;
 	
 	@Column(name="february")
-	private Integer february;
+	private Integer february = 1;
 	
 	@Column(name="march")
-	private Integer march;
+	private Integer march = 1;
 	
 	@Column(name="april")
-	private Integer april;
+	private Integer april = 1;
 	
 	@Column(name="may")
-	private Integer may;
+	private Integer may = 1;
 	
 	@Column(name="june")
-	private Integer june;
+	private Integer june = 1;
 	
 	@Column(name="july")
-	private Integer july;
+	private Integer july = 1;
 	
 	@Column(name="august")
-	private Integer august;
+	private Integer august = 1;
 	
 	@Column(name="september")
-	private Integer september;
+	private Integer september = 1;
 	
 	@Column(name="october")
-	private Integer october;
+	private Integer october = 1;
 	
 	@Column(name="november")
-	private Integer november;
+	private Integer november = 1;
 	
 	@Column(name="december")
-	private Integer december;
+	private Integer december = 1;
 
 	
 	@JsonIgnore

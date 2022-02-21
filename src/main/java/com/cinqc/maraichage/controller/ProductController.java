@@ -71,19 +71,7 @@ public class ProductController {
 
 		return service.findProductsByProducerAbr(abr);	
 	}
-/*	
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE}, 
-	        produces = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody ProductDTO updateProduct( @RequestParam Map<String, String> body, @PathVariable Long id) {	
-		final GsonBuilder builder = new GsonBuilder();
 
-	    final Gson gson = builder.setDateFormat("yyyy-MM-dd").create();
-	    
-	    ProductDTO product = gson.fromJson(body.keySet().iterator().next(), ProductDTO.class);
-	
-		return service.updateProduct(id, product);
-	}
-	*/
 	@RequestMapping(value = "/{productId}/producer/{producerId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody RealQuantityEntity updateRealProduct( @RequestBody String body, @PathVariable Long productId, @PathVariable Long producerId) {	
 		final GsonBuilder builder = new GsonBuilder();

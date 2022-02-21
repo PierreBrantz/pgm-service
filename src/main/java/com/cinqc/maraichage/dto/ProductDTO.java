@@ -37,7 +37,7 @@ public class ProductDTO {
 	
 	private List<ProducerProductEntity> producerProducts = new ArrayList<>();
 
-	private SeasonalityProductEntity seasonalityProduct =  new SeasonalityProductEntity();
+	private SeasonalityProductEntity seasonalityProduct;
 	
 	private List<ProducerEntity> producers = new ArrayList<>();
 
@@ -79,6 +79,8 @@ public class ProductDTO {
 	private String remark;
 	
 	private RealQuantityEntity currentRealQuantity;
+	
+	private List<SeasonalityDTO> seasonalities;
 
 
 }

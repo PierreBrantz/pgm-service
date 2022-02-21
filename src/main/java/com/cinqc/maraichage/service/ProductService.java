@@ -58,7 +58,8 @@ public class ProductService {
 			product.setProducers(producers);
 
 			ProductDTO productDTO = MapperUtil.getModelMapperInstance().map(product, ProductDTO.class);
-			productDTO.setRealQuantities(realQuantityRepository.findAllRealQuantityByProductId(product.getId()));			
+			productDTO.setRealQuantities(realQuantityRepository.findAllRealQuantityByProductId(product.getId()));	
+			productDTO.setSeasonalities(seasonalityService.findAllSeasons());
 			ret.add(productDTO);		
 		}
 		return ret;
