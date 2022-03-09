@@ -80,7 +80,7 @@ public class ProductEntity {
 	private String salesFormat;
 	
 	@Column(name = "margin")
-	private Long margin;
+	private BigDecimal margin;
 	
 	@Column(name = "nbbypackaging")
 	private Long nbByPackaging;

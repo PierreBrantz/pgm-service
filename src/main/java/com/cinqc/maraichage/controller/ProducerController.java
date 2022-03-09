@@ -76,8 +76,6 @@ public class ProducerController {
 
 	@RequestMapping(value = "/{producerId}/product/{productId}", method = RequestMethod.DELETE)
 	public void deleteProduct(@PathVariable String producerId, @PathVariable String productId) {	
-		  ppService.deleteProduct(Long.parseLong(producerId), Long.parseLong(productId));
-		  
-		 
+		  ppService.deleteProduct(Long.parseLong(producerId), Long.parseLong(productId));		 
 	}
 }

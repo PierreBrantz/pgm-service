@@ -22,7 +22,7 @@ public class ProductOriginService {
 
 
 	public Iterable<ProductOriginDTO> findAllProductOrigins() {
-		return MapperUtil.mapList(repository.findByOrderByIdAsc(), ProductOriginDTO.class);
+		return MapperUtil.mapList(repository.findByOrderByNameAsc(), ProductOriginDTO.class);
 	}
 
 	public void updateProductOrigins(List<ProductOriginDTO> productOrigins) {
@@ -31,6 +31,10 @@ public class ProductOriginService {
 	
 	public void deleteProductOrigin(Long id) {
 		repository.deleteById(id);
+	}
+	
+	public Integer findSequenceCurrVal() {
+		return repository.findSequenceCurrVal();
 	}
 	
 }

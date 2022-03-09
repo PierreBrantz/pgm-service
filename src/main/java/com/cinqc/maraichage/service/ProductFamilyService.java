@@ -3,6 +3,7 @@ package com.cinqc.maraichage.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.cinqc.maraichage.dto.ProductFamilyDTO;
@@ -22,16 +23,20 @@ public class ProductFamilyService {
 
 
 	public Iterable<ProductFamilyDTO> findAllProductFamilies() {
-		return MapperUtil.mapList(repository.findByOrderByIdAsc(), ProductFamilyDTO.class);
+		return MapperUtil.mapList(repository.findByOrderByNameAsc(), ProductFamilyDTO.class);
 	}
-	
+
 	public void updateProductFamilies(List<ProductFamilyDTO> productFamilies) {
 		repository.saveAll(MapperUtil.mapList(productFamilies, ProductFamilyEntity.class));
 	}
-	
-	public void deleteProductFamily(Long id) {
+
+	public void deleteProductFamily(Long id) throws DataIntegrityViolationException {
 		repository.deleteById(id);
 	}
 
-	
+	public Integer findSequenceCurrVal() {
+		return repository.findSequenceCurrVal();
+	}
+
+
 }

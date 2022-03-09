@@ -22,7 +22,7 @@ public class PackagingService {
 
 
 	public Iterable<PackagingDTO> findAllPackagings() {
-		return MapperUtil.mapList(repository.findByOrderByIdAsc(), PackagingDTO.class);
+		return MapperUtil.mapList(repository.findByOrderByNameAsc(), PackagingDTO.class);
 	}
 
 	public void updatePackagings(List<PackagingDTO> packagings) {
@@ -31,6 +31,10 @@ public class PackagingService {
 	
 	public void deletePackaging(Long id) {
 		repository.deleteById(id);
+	}
+	
+	public Integer findSequenceCurrVal() {
+		return repository.findSequenceCurrVal();
 	}
 	
 }

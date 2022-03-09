@@ -22,7 +22,7 @@ public class ProductUnitService {
 
 
 	public Iterable<ProductUnitDTO> findAllProductUnits() {
-		return MapperUtil.mapList(repository.findByOrderByIdAsc(), ProductUnitDTO.class);
+		return MapperUtil.mapList(repository.findByOrderByNameAsc(), ProductUnitDTO.class);
 	}
 	
 	public void updateProductUnits(List<ProductUnitDTO> productUnits) {
@@ -31,6 +31,10 @@ public class ProductUnitService {
 	
 	public void deleteProductUnit(Long id) {
 		repository.deleteById(id);
+	}
+	
+	public Integer findSequenceCurrVal() {
+		return repository.findSequenceCurrVal();
 	}
 
 	

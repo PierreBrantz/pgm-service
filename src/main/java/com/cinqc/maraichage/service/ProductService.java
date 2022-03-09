@@ -189,10 +189,10 @@ public class ProductService {
 		repository.deleteById(productId);
 	}
 
-	public void addProductWithName(String productName) {
+	public ProductEntity addProductWithName(String productName) {
 		ProductEntity product = new ProductEntity();
 		product.setName(productName);
-		repository.save(product);
+		return repository.save(product);
 
 	}
 

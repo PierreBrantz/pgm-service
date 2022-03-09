@@ -94,7 +94,9 @@ public class ProductController {
 	}
 	
 	@RequestMapping(value = "/name/{productName}", method = RequestMethod.POST)
-	public @ResponseBody void addNewProduct(@PathVariable String productName) {	
-		service.addProductWithName(productName);
+	public @ResponseBody Long addNewProduct(@PathVariable String productName) {	
+		return service.addProductWithName(productName).getId();
 	}
+	
+	
 }

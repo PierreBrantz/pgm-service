@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,8 +53,19 @@ public class ProductOriginController {
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public void deleteProductOrigin(@PathVariable String id) {	
-		service.deleteProductOrigin(Long.parseLong(id));
+	public @ResponseBody ResponseEntity<String> deleteProductOrigin(@PathVariable String id) {	
+		try {
+			service.deleteProductOrigin(Long.parseLong(id));			
+		}
+		catch (DataIntegrityViolationException ex) {
+			return new ResponseEntity<>("ko", HttpStatus.FAILED_DEPENDENCY);
+		}
+		return new ResponseEntity<>("ok", HttpStatus.OK);
 	}
 	
+	@GetMapping("/sequencecurrVal")
+	@ResponseStatus(HttpStatus.OK)
+	public Integer findSequenceCurrVal() {
+		return service.findSequenceCurrVal();
+	}
 }

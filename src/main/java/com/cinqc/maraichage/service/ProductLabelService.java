@@ -22,7 +22,7 @@ public class ProductLabelService {
 
 
 	public Iterable<ProductLabelDTO> findAllProductLabels() {
-		return MapperUtil.mapList(repository.findByOrderByIdAsc(), ProductLabelDTO.class);
+		return MapperUtil.mapList(repository.findByOrderByNameAsc(), ProductLabelDTO.class);
 	}
 
 	public void updateProductLabels(List<ProductLabelDTO> productLabels) {
@@ -31,5 +31,9 @@ public class ProductLabelService {
 	
 	public void deleteProductLabel(Long id) {
 		repository.deleteById(id);
+	}
+	
+	public Integer findSequenceCurrVal() {
+		return repository.findSequenceCurrVal();
 	}
 }

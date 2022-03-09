@@ -56,7 +56,7 @@ public class ProductDTO {
 	private String salesFormat;
 	
 
-	private Long margin;
+	private BigDecimal margin;
 	
 
 	private Long nbByPackaging;
