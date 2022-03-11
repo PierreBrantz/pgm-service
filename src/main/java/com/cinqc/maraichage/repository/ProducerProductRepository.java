@@ -1,5 +1,7 @@
 package com.cinqc.maraichage.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,6 +12,10 @@ import com.cinqc.maraichage.model.ProducerProductEntity;
 
 public interface ProducerProductRepository extends CrudRepository<ProducerProductEntity, Long>{
 	ProducerProductEntity findByProducerIdAndProductId(Long producerId, Long productId);
+	
+	List<ProducerProductEntity> findByProductId(Long productId);
+	
+	
 	
 	@Transactional
 	@Modifying(clearAutomatically = true)

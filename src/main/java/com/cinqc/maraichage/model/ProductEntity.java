@@ -45,10 +45,11 @@ public class ProductEntity {
     @JoinColumn(name="product_id")	
 	private Set<TheoreticalQuantityEntity> quantities;
 	
-	@OneToMany(cascade=CascadeType.ALL)
+	/*
+	@OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="product_id")	
 	private Set<ProducerProductEntity> producerProducts;
-	
+	*/
 
 	@ManyToMany(mappedBy = "products")
     private Set<ProducerEntity> producers = new HashSet<>();
