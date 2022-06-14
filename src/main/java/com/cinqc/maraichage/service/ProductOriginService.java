@@ -21,7 +21,7 @@ public class ProductOriginService {
 
 
 
-	public Iterable<ProductOriginDTO> findAllProductOrigins() {
+	public List<ProductOriginDTO> findAllProductOrigins() {
 		return MapperUtil.mapList(repository.findByOrderByNameAsc(), ProductOriginDTO.class);
 	}
 

@@ -21,7 +21,7 @@ public class ProductTypeService {
 
 
 
-	public Iterable<ProductTypeDTO> findAllProductTypes() {
+	public List<ProductTypeDTO> findAllProductTypes() {
 		return MapperUtil.mapList(repository.findByOrderByNameAsc(), ProductTypeDTO.class);
 	}
 	

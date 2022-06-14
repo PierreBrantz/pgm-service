@@ -81,6 +81,12 @@ public class ProductDTO {
 	private RealQuantityEntity currentRealQuantity;
 	
 	private List<SeasonalityDTO> seasonalities;
+	
+	private List<ProductLabelDTO> productLabels;
+	
+	private List<ProductTypeDTO> productTypes;
+	
+	private List<ProductOriginDTO> productOrigins;
 
 
 }

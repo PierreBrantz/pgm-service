@@ -21,7 +21,7 @@ public class ProductLabelService {
 
 
 
-	public Iterable<ProductLabelDTO> findAllProductLabels() {
+	public List<ProductLabelDTO> findAllProductLabels() {
 		return MapperUtil.mapList(repository.findByOrderByNameAsc(), ProductLabelDTO.class);
 	}
 
