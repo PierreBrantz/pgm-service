@@ -91,7 +91,7 @@ public class ProductService {
 		ProductEntity productEntity = repository.findById(id).get();
 		ProductDTO productDTO = MapperUtil.getModelMapperInstance().map(productEntity, ProductDTO.class);
 		productDTO.setRealQuantities(realQuantityRepository.findAllRealQuantityByProductId(productDTO.getId()));
-
+		productDTO.setSeasonalities(seasonalityService.findAllSeasons());
 		//	productDTO.setCurrentSeason(seasonalityService.findCurrentSeasonality(productEntity));
 
 		List<ProducerEntity> producers = new ArrayList<>();
@@ -126,6 +126,7 @@ public class ProductService {
 			ProductDTO productDTO = MapperUtil.getModelMapperInstance().map(product, ProductDTO.class);
 			productDTO.setCurrentRealQuantity(realQuantity);	
 			productDTO.setWeeklyProposals(weeklyProposalEntities);
+			productDTO.setSeasonalities(seasonalityService.findAllSeasons());
 			realProducts.add(productDTO);
 
 		}
