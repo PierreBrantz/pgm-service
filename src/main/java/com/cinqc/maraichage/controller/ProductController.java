@@ -2,6 +2,7 @@ package com.cinqc.maraichage.controller;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cinqc.maraichage.dto.ProductDTO;
 import com.cinqc.maraichage.model.RealQuantityEntity;
+import com.cinqc.maraichage.model.WeeklyProposalEntity;
 import com.cinqc.maraichage.service.ProductService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -80,6 +82,16 @@ public class ProductController {
 	    ProductDTO product = gson.fromJson(body, listOfMyClassObject);
 	
 		return service.updateRealProduct(productId, producerId, product);
+	}
+	
+	@RequestMapping(value = "/{productId}/producer/{producerId}/date/{date}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody List<WeeklyProposalEntity> updateWeeklyProposal( @RequestBody String body, @PathVariable Long productId, @PathVariable Long producerId, @PathVariable Date date) {	
+		final GsonBuilder builder = new GsonBuilder();
+	    final Gson gson = builder.create();
+	    Type listOfMyClassObject = new TypeToken<ProductDTO>() {}.getType();
+	    ProductDTO product = gson.fromJson(body, listOfMyClassObject);
+	
+		return service.updateWeeklyProposal(productId, producerId, product);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -20,9 +20,11 @@ import com.cinqc.maraichage.model.ProducerProductEntity;
 import com.cinqc.maraichage.model.ProductEntity;
 import com.cinqc.maraichage.model.RealQuantityEntity;
 import com.cinqc.maraichage.model.SeasonalityProductEntity;
+import com.cinqc.maraichage.model.WeeklyProposalEntity;
 import com.cinqc.maraichage.repository.ProducerProductRepository;
 import com.cinqc.maraichage.repository.ProductRepository;
 import com.cinqc.maraichage.repository.RealQuantityRepository;
+import com.cinqc.maraichage.repository.WeeklyProposalRepository;
 import com.cinqc.maraichage.util.MapperUtil;
 
 
@@ -50,6 +52,8 @@ public class ProductService {
 	ProductOriginService productOriginService;
 	@Autowired
 	ProductLabelService productLabelService;
+	@Autowired
+	WeeklyProposalRepository weeklyProposalRepository;
 
 
 	public Iterable<ProductDTO> findAllProducts() {	
@@ -69,13 +73,13 @@ public class ProductService {
 			productDTO.setProductLabels(productLabelService.findAllProductLabels());
 			productDTO.setProductOrigins(productOriginService.findAllProductOrigins());
 			productDTO.setProductTypes(productTypeService.findAllProductTypes());
-			
+
 			ret.add(productDTO);		
 		}
-		
-		
-	
-	//return	MapperUtil.mapList(products, ProductDTO.class);
+
+
+
+		//return	MapperUtil.mapList(products, ProductDTO.class);
 		return ret;
 	}
 
@@ -118,8 +122,10 @@ public class ProductService {
 
 		for(ProductEntity product : products) {					
 			RealQuantityEntity realQuantity = realQuantityRepository.findRealQuantity(producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producerId, product.getId()).getId());
+			List<WeeklyProposalEntity> weeklyProposalEntities = weeklyProposalRepository.findWeeklyProposal(producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producerId, product.getId()).getId());
 			ProductDTO productDTO = MapperUtil.getModelMapperInstance().map(product, ProductDTO.class);
-			productDTO.setCurrentRealQuantity(realQuantity);			
+			productDTO.setCurrentRealQuantity(realQuantity);	
+			productDTO.setWeeklyProposals(weeklyProposalEntities);
 			realProducts.add(productDTO);
 
 		}
@@ -178,6 +184,31 @@ public class ProductService {
 
 
 	}
+
+	public List<WeeklyProposalEntity> updateWeeklyProposal(Long productId, Long producerId, ProductDTO newProduct) {
+		ProducerProductEntity pp = producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producerId, productId);
+
+		List<WeeklyProposalEntity> wpes = newProduct.getWeeklyProposals();
+		for(WeeklyProposalEntity wpe : wpes) {
+			if(wpe != null) {
+				
+					if(weeklyProposalRepository.findByProducerProductIdAndDate(pp.getId(), wpe.getDate()) != null) {
+						WeeklyProposalEntity change = weeklyProposalRepository.findByProducerProductIdAndDate(pp.getId(), wpe.getDate());
+						change.setQuantity(wpe.getQuantity());
+						change.setRealQuantity(wpe.getRealQuantity());
+						weeklyProposalRepository.save(change);
+					}
+
+					else {
+						wpe.setProducerProductId(pp.getId());
+						weeklyProposalRepository.save(wpe);
+					
+				}
+			}
+		}
+		return new ArrayList<WeeklyProposalEntity>();
+	}
+
 
 	public void updateProducts(List<ProductDTO> products) {
 		for(ProductDTO p : products) {

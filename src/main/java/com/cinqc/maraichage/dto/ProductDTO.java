@@ -15,6 +15,7 @@ import com.cinqc.maraichage.model.ProductUnitEntity;
 import com.cinqc.maraichage.model.RealQuantityEntity;
 import com.cinqc.maraichage.model.SeasonalityProductEntity;
 import com.cinqc.maraichage.model.TheoreticalQuantityEntity;
+import com.cinqc.maraichage.model.WeeklyProposalEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +37,8 @@ public class ProductDTO {
 	private List<RealQuantityEntity> realQuantities =  new ArrayList<>();
 	
 	private List<ProducerProductEntity> producerProducts = new ArrayList<>();
+	
+
 
 	private SeasonalityProductEntity seasonalityProduct;
 	
@@ -79,6 +82,8 @@ public class ProductDTO {
 	private String remark;
 	
 	private RealQuantityEntity currentRealQuantity;
+	
+	private List<WeeklyProposalEntity> weeklyProposals;
 	
 	private List<SeasonalityDTO> seasonalities;
 	
