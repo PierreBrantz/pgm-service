@@ -76,7 +76,7 @@ public class ProductDTO {
 	private Boolean fragil;
 	
 	
-	private Long eshopId;
+	private String eshopId;
 	
 
 	private String remark;

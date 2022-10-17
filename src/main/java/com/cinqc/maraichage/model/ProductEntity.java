@@ -100,7 +100,7 @@ public class ProductEntity {
 	private Boolean fragil;
 	
 	@Column(name = "eshop_id")
-	private Long eshopId;
+	private String eshopId;
 	
 	@Column(name = "remark")
 	private String remark;
