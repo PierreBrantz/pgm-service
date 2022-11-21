@@ -1,5 +1,8 @@
 package com.cinqc.maraichage.dto;
 
+import com.cinqc.maraichage.model.CertificateEntity;
+import com.cinqc.maraichage.model.ProducerTypeEntity;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,4 +37,8 @@ public class ProducerDTO {
 	private String tva;
 
 	private String gsm;
+	
+	private CertificateEntity certificate;
+	
+	private ProducerTypeEntity producerType;
 }

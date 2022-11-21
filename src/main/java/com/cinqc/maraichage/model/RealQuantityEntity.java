@@ -54,5 +54,7 @@ public class RealQuantityEntity {
 	@Column
 	private BigDecimal quantity12; 
 	
+	private transient long producerId;
+	
 	
 }

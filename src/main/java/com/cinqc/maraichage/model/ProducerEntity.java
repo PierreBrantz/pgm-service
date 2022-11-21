@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -77,6 +78,14 @@ public class ProducerEntity {
 	        inverseJoinColumns = { @JoinColumn(name = "product_id") }
 	    )
 	 private Set<ProductEntity> products = new HashSet<>();
+	
+	@ManyToOne
+    @JoinColumn(name = "certificate_id", referencedColumnName = "id")
+	private CertificateEntity certificate;
+	
+	@ManyToOne
+    @JoinColumn(name = "producer_type_id", referencedColumnName = "id")
+	private ProducerTypeEntity producerType;
 	
 	
 	private transient RealQuantityEntity realQuantity;

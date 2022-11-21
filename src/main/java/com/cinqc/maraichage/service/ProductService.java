@@ -61,8 +61,21 @@ public class ProductService {
 		List<ProductEntity> products = repository.findByOrderByNameAsc();
 		for(ProductEntity product : products) {
 			Set<ProducerEntity> producers =new HashSet<>();			
-			for(ProducerEntity producer : product.getProducers()) {				
-				producer.setRealQuantity(realQuantityRepository.findRealQuantity(producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producer.getId(), product.getId()).getId()));
+			for(ProducerEntity producer : product.getProducers()) {	
+				RealQuantityEntity r = realQuantityRepository.findRealQuantity(producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producer.getId(), product.getId()).getId());
+				if(r != null) {
+				r.setProducerId(producer.getId());
+				producer.setRealQuantity(r);
+				
+				}
+				else {
+					r = new RealQuantityEntity();
+					r.setYearOfReference(0);
+					r.setProducerId(producer.getId());
+					r.setProducerProductId(producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producer.getId(), product.getId()).getId());
+					realQuantityRepository.save(r);
+					producer.setRealQuantity(r);
+				}
 				producers.add(producer);
 			}
 			product.setProducers(producers);
@@ -157,28 +170,28 @@ public class ProductService {
 	}
 
 	public RealQuantityEntity updateRealProduct(Long productId, Long producerId, ProductDTO newProduct) {
-
+		
 
 		ProducerProductEntity pp = producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producerId, productId);
 		RealQuantityEntity rqe = realQuantityRepository.findRealQuantity(pp.getId());
-		if(rqe != null) {
-			rqe.setQuantity1(newProduct.getCurrentRealQuantity().getQuantity1());
-			rqe.setQuantity2(newProduct.getCurrentRealQuantity().getQuantity2());
-			rqe.setQuantity3(newProduct.getCurrentRealQuantity().getQuantity3());
-			rqe.setQuantity4(newProduct.getCurrentRealQuantity().getQuantity4());
-			rqe.setQuantity5(newProduct.getCurrentRealQuantity().getQuantity5());
-			rqe.setQuantity6(newProduct.getCurrentRealQuantity().getQuantity6());
-			rqe.setQuantity7(newProduct.getCurrentRealQuantity().getQuantity7());
-			rqe.setQuantity8(newProduct.getCurrentRealQuantity().getQuantity8());
-			rqe.setQuantity9(newProduct.getCurrentRealQuantity().getQuantity9());
-			rqe.setQuantity10(newProduct.getCurrentRealQuantity().getQuantity10());
-			rqe.setQuantity11(newProduct.getCurrentRealQuantity().getQuantity11());
-			rqe.setQuantity12(newProduct.getCurrentRealQuantity().getQuantity12());			
+		if(rqe != null && newProduct.getCurrentRealQuantity() != null) {
+			rqe.setQuantity1(newProduct.getCurrentRealQuantity().getQuantity1() == null ? newProduct.getRealQuantities().get(0).getQuantity1() : newProduct.getCurrentRealQuantity().getQuantity1());
+			rqe.setQuantity2(newProduct.getCurrentRealQuantity().getQuantity2()== null ? newProduct.getRealQuantities().get(0).getQuantity1(): newProduct.getCurrentRealQuantity().getQuantity2());
+			rqe.setQuantity3(newProduct.getCurrentRealQuantity().getQuantity3()== null ? newProduct.getRealQuantities().get(0).getQuantity1() : newProduct.getCurrentRealQuantity().getQuantity3());
+			rqe.setQuantity4(newProduct.getCurrentRealQuantity().getQuantity4()== null ? newProduct.getRealQuantities().get(0).getQuantity1() : newProduct.getCurrentRealQuantity().getQuantity4());
+			rqe.setQuantity5(newProduct.getCurrentRealQuantity().getQuantity5()== null ? newProduct.getRealQuantities().get(0).getQuantity1() : newProduct.getCurrentRealQuantity().getQuantity5());
+			rqe.setQuantity6(newProduct.getCurrentRealQuantity().getQuantity6()== null ? newProduct.getRealQuantities().get(0).getQuantity1() : newProduct.getCurrentRealQuantity().getQuantity6());
+			rqe.setQuantity7(newProduct.getCurrentRealQuantity().getQuantity7()== null ? newProduct.getRealQuantities().get(0).getQuantity1() : newProduct.getCurrentRealQuantity().getQuantity7());
+			rqe.setQuantity8(newProduct.getCurrentRealQuantity().getQuantity8()== null ? newProduct.getRealQuantities().get(0).getQuantity8() : newProduct.getCurrentRealQuantity().getQuantity8());
+			rqe.setQuantity9(newProduct.getCurrentRealQuantity().getQuantity9()== null ? newProduct.getRealQuantities().get(0).getQuantity9() : newProduct.getCurrentRealQuantity().getQuantity9());
+			rqe.setQuantity10(newProduct.getCurrentRealQuantity().getQuantity10()== null ? newProduct.getRealQuantities().get(0).getQuantity10() : newProduct.getCurrentRealQuantity().getQuantity10());
+			rqe.setQuantity11(newProduct.getCurrentRealQuantity().getQuantity11()== null ? newProduct.getRealQuantities().get(0).getQuantity11() : newProduct.getCurrentRealQuantity().getQuantity11());
+			rqe.setQuantity12(newProduct.getCurrentRealQuantity().getQuantity12()== null ? newProduct.getRealQuantities().get(0).getQuantity12() : newProduct.getCurrentRealQuantity().getQuantity12());			
 			return realQuantityRepository.save(rqe);
 		}
 		else {
 
-			RealQuantityEntity realProduct = newProduct.getCurrentRealQuantity();
+			RealQuantityEntity realProduct = ((newProduct.getRealQuantities().size()>0 && newProduct.getRealQuantities().get(0) != null) ? newProduct.getRealQuantities().get(0) :newProduct.getCurrentRealQuantity() );
 			realProduct.setProducerProductId(pp.getId());
 			return realQuantityRepository.save(realProduct);
 		}
@@ -216,6 +229,32 @@ public class ProductService {
 			if(p.getSeasonalityProduct() == null) {
 				p.setSeasonalityProduct(new SeasonalityProductEntity());
 			}
+			for(ProducerEntity producer : p.getProducers()) {
+				ProducerProductEntity pp = producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producer.getId(), p.getId());
+				RealQuantityEntity rqe = realQuantityRepository.findRealQuantity(pp.getId());
+				if(rqe != null && p.getCurrentRealQuantity() != null) {
+					rqe.setQuantity1(p.getCurrentRealQuantity().getQuantity1() == null ? p.getRealQuantities().get(0).getQuantity1() : p.getCurrentRealQuantity().getQuantity1());
+					rqe.setQuantity2(p.getCurrentRealQuantity().getQuantity2()== null ? p.getRealQuantities().get(0).getQuantity1(): p.getCurrentRealQuantity().getQuantity2());
+					rqe.setQuantity3(p.getCurrentRealQuantity().getQuantity3()== null ? p.getRealQuantities().get(0).getQuantity1() : p.getCurrentRealQuantity().getQuantity3());
+					rqe.setQuantity4(p.getCurrentRealQuantity().getQuantity4()== null ? p.getRealQuantities().get(0).getQuantity1() : p.getCurrentRealQuantity().getQuantity4());
+					rqe.setQuantity5(p.getCurrentRealQuantity().getQuantity5()== null ? p.getRealQuantities().get(0).getQuantity1() : p.getCurrentRealQuantity().getQuantity5());
+					rqe.setQuantity6(p.getCurrentRealQuantity().getQuantity6()== null ? p.getRealQuantities().get(0).getQuantity1() : p.getCurrentRealQuantity().getQuantity6());
+					rqe.setQuantity7(p.getCurrentRealQuantity().getQuantity7()== null ? p.getRealQuantities().get(0).getQuantity1() : p.getCurrentRealQuantity().getQuantity7());
+					rqe.setQuantity8(p.getCurrentRealQuantity().getQuantity8()== null ? p.getRealQuantities().get(0).getQuantity8() : p.getCurrentRealQuantity().getQuantity8());
+					rqe.setQuantity9(p.getCurrentRealQuantity().getQuantity9()== null ? p.getRealQuantities().get(0).getQuantity9() : p.getCurrentRealQuantity().getQuantity9());
+					rqe.setQuantity10(p.getCurrentRealQuantity().getQuantity10()== null ? p.getRealQuantities().get(0).getQuantity10() : p.getCurrentRealQuantity().getQuantity10());
+					rqe.setQuantity11(p.getCurrentRealQuantity().getQuantity11()== null ? p.getRealQuantities().get(0).getQuantity11() : p.getCurrentRealQuantity().getQuantity11());
+					rqe.setQuantity12(p.getCurrentRealQuantity().getQuantity12()== null ? p.getRealQuantities().get(0).getQuantity12() : p.getCurrentRealQuantity().getQuantity12());			
+					realQuantityRepository.save(rqe);
+				}
+				else {
+
+					RealQuantityEntity realProduct = ((p.getRealQuantities().size()>0 && p.getRealQuantities().get(0) != null) ? p.getRealQuantities().get(0) :p.getCurrentRealQuantity() );
+					realProduct.setProducerProductId(pp.getId());
+					 realQuantityRepository.save(realProduct);
+				}
+			}
+			
 		}
 
 		repository.saveAll(MapperUtil.mapList(products, ProductEntity.class));
