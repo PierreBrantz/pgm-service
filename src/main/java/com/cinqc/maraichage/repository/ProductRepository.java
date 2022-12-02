@@ -16,11 +16,12 @@ public interface ProductRepository extends CrudRepository<ProductEntity, Long>{
 
 	List<ProductEntity> findByNameContainsIgnoreCase(String in);
 
+	//List<ProductEntity> findByCertificateIdIgnoreCaseOrderByNameAsc(String certificateId);
+
 	List<ProductEntity> findByOrderByNameAsc();
-
-
+	
 	@Query(nativeQuery = true,value = "select p.* from producer_product pp \n"
-			+ "	inner join product p on p.id = pp.product_id where pp.producer_id = :producerId")
+			+ "	inner join product p on p.id = pp.product_id where pp.producer_id = :producerId order by p.name")
 	List<ProductEntity> findByProducer(@Param("producerId") Long producerId);
 
 

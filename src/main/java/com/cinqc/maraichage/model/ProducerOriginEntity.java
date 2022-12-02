@@ -13,20 +13,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="contract_param")
-public class ContractParamEntity {
+@Table(name="producer_origin")
+public class ProducerOriginEntity {
 
 	@Column(name = "id")
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "title")
-	private String title;
-	
-	@Column(name = "end_txt")
-	private String endTxt;
-	
-	@Column(name = "proposition_column")
-	private Boolean propositionColumn;
+	@Column(name = "name")
+	private String name;
 }

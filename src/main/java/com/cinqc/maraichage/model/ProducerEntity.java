@@ -87,6 +87,10 @@ public class ProducerEntity {
     @JoinColumn(name = "producer_type_id", referencedColumnName = "id")
 	private ProducerTypeEntity producerType;
 	
+	@ManyToOne
+    @JoinColumn(name = "producer_origin_id", referencedColumnName = "id")
+	private ProducerOriginEntity producerOrigin;
+	
 	
 	private transient RealQuantityEntity realQuantity;
 

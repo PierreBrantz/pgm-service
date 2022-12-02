@@ -51,6 +51,10 @@ public class ProductDTO {
 
 	private ProductUnitEntity productUnit;
 	
+	private Boolean compactDisplay;
+	
+	private Long quantity;
+	
 	
 	private ProductLabelEntity productLabel;
 	

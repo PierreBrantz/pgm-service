@@ -105,6 +105,11 @@ public class ProductEntity {
 	@Column(name = "remark")
 	private String remark;
 	
+	@Column(name = "compact_display")
+	private Boolean compactDisplay;
+	
+	private Long quantity;
+	
 
 	
 	

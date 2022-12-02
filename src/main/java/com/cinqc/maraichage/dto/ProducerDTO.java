@@ -1,7 +1,11 @@
 package com.cinqc.maraichage.dto;
 
+import java.util.Set;
+
 import com.cinqc.maraichage.model.CertificateEntity;
+import com.cinqc.maraichage.model.ProducerOriginEntity;
 import com.cinqc.maraichage.model.ProducerTypeEntity;
+import com.cinqc.maraichage.model.ProductEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -41,4 +45,8 @@ public class ProducerDTO {
 	private CertificateEntity certificate;
 	
 	private ProducerTypeEntity producerType;
+	
+	private ProducerOriginEntity producerOrigin;
+	
+	private Set<ProductEntity> products; 
 }
