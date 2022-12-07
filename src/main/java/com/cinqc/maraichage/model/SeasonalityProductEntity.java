@@ -64,11 +64,11 @@ public class SeasonalityProductEntity {
 	@Column(name="december")
 	private Integer december = 1;
 
-	
+	/*
 	@JsonIgnore
 	@OneToOne(mappedBy = "seasonalityProduct", cascade = CascadeType.ALL)
 	private ProductEntity product;
-	
+	*/
 	
 	
 }

@@ -1,6 +1,6 @@
 package com.cinqc.maraichage.controller;
 
-import java.lang.reflect.Type;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,9 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +21,6 @@ import com.cinqc.maraichage.service.ProducerService;
 import com.cinqc.maraichage.util.MapperUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 @RestController
 @CrossOrigin
@@ -51,7 +50,7 @@ public class ProducerController {
 	public ProducerDTO findProducerId(@PathVariable Long id) {
 		return MapperUtil.getModelMapperInstance().map(service.findProducerById(id), ProducerDTO.class);
 	}
-	
+	/*
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ProducerDTO addProducer( @RequestBody String body) {	
 		final GsonBuilder builder = new GsonBuilder();
@@ -62,6 +61,17 @@ public class ProducerController {
 	    
 		return service.addProducer(producer);
 	}
+	*/
+	@RequestMapping(method = RequestMethod.POST, consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE, MediaType.APPLICATION_JSON_VALUE}, 
+	        produces = {MediaType.APPLICATION_ATOM_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	public @ResponseBody ProducerDTO addProducer( @RequestParam Map<String, String> body) {	
+		final GsonBuilder builder = new GsonBuilder();
+	    final Gson gson = builder.create();
+	    ProducerDTO producer = gson.fromJson(body.keySet().iterator().next(), ProducerDTO.class);
+	
+		return service.addProducer(producer);
+	}
+	
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public void deleteProducer(@PathVariable String id) {	

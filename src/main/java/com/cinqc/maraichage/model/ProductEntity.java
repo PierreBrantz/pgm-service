@@ -54,9 +54,11 @@ public class ProductEntity {
 	@ManyToMany(mappedBy = "products")
     private Set<ProducerEntity> producers = new HashSet<>();
 	
+	/*
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "seasonality_product_id") 
 	private SeasonalityProductEntity seasonalityProduct;
+	*/
 	
 	@ManyToOne
     @JoinColumn(name = "product_type_id", referencedColumnName = "id")

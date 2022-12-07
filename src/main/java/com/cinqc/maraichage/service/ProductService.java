@@ -66,13 +66,15 @@ public class ProductService {
 			products = products.stream().filter(o -> (o.getProductLabel() != null ?  o.getProductLabel().getName() : "").equalsIgnoreCase(producer.getCertificate() != null ? producer.getCertificate().getName() : "")).collect(Collectors.toList());
 			products = products.stream().filter(o -> (o.getProductType() != null ?  o.getProductType().getName() : "").equalsIgnoreCase(producer.getProducerType() != null ? producer.getProducerType().getName() : "")).collect(Collectors.toList());
 			products = products.stream().filter(o -> (o.getProductOrigin() != null ?  o.getProductOrigin().getName() : "").equalsIgnoreCase(producer.getProducerOrigin() != null ? producer.getProducerOrigin().getName() : "")).collect(Collectors.toList());}
+		RealQuantityEntity r = null;
 		for(ProductEntity product : products) {
 			Set<ProducerEntity> producers =new HashSet<>();			
 			for(ProducerEntity producer : product.getProducers()) {	
-				RealQuantityEntity r = realQuantityRepository.findRealQuantity(producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producer.getId(), product.getId()).getId());
+				r = realQuantityRepository.findRealQuantity(producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producer.getId(), product.getId()).getId());
 				if(r != null) {
 				r.setProducerId(producer.getId());
 				producer.setRealQuantity(r);
+				
 				
 				}
 				else {
@@ -93,7 +95,8 @@ public class ProductService {
 			productDTO.setProductLabels(productLabelService.findAllProductLabels());
 			productDTO.setProductOrigins(productOriginService.findAllProductOrigins());
 			productDTO.setProductTypes(productTypeService.findAllProductTypes());
-
+			productDTO.setCurrentRealQuantity(r);
+			productDTO.setSeasonalityProduct(seasonalityProductService.findSeasonalityProductsByProduct(product).get(0));
 			ret.add(productDTO);		
 		}
 
@@ -147,6 +150,7 @@ public class ProductService {
 			productDTO.setCurrentRealQuantity(realQuantity);	
 			productDTO.setWeeklyProposals(weeklyProposalEntities);
 			productDTO.setSeasonalities(seasonalityService.findAllSeasons());
+			productDTO.setSeasonalityProduct(seasonalityProductService.findSeasonalityProductsByProduct(product).get(0));
 			realProducts.add(productDTO);
 
 		}
@@ -179,9 +183,16 @@ public class ProductService {
 	public RealQuantityEntity updateRealProduct(Long productId, Long producerId, ProductDTO newProduct) {
 		
 
-		ProducerProductEntity pp = producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producerId, productId);
-		RealQuantityEntity rqe = realQuantityRepository.findRealQuantity(pp.getId());
-		if(rqe != null) {
+		 ProducerProductEntity ppTemp = producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producerId, productId);
+		if(ppTemp == null) {
+			ppTemp = new ProducerProductEntity();
+			ppTemp.setProducerId(producerId);
+			ppTemp.setProductId(productId);
+			producerProductRepository.save(ppTemp);
+		}
+		ProducerProductEntity pp = ppTemp;
+		RealQuantityEntity rqe = realQuantityRepository.findRealQuantity(ppTemp.getId());
+		if(rqe != null && pp != null) {
 			rqe.setQuantity1((newProduct.getCurrentRealQuantity() == null || newProduct.getCurrentRealQuantity().getQuantity1() == null) ? (newProduct.getRealQuantities().size()==0 ? new BigDecimal(0) : newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity1()) : newProduct.getCurrentRealQuantity().getQuantity1());
 			rqe.setQuantity2((newProduct.getCurrentRealQuantity() == null || newProduct.getCurrentRealQuantity().getQuantity2()== null) ? (newProduct.getRealQuantities().size()==0 ? new BigDecimal(0) : newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity2()): newProduct.getCurrentRealQuantity().getQuantity2());
 			rqe.setQuantity3((newProduct.getCurrentRealQuantity() == null || newProduct.getCurrentRealQuantity().getQuantity3()== null) ? (newProduct.getRealQuantities().size()==0 ? new BigDecimal(0) : newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity3()) : newProduct.getCurrentRealQuantity().getQuantity3());
