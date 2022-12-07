@@ -96,7 +96,7 @@ public class ProductService {
 			productDTO.setProductOrigins(productOriginService.findAllProductOrigins());
 			productDTO.setProductTypes(productTypeService.findAllProductTypes());
 			productDTO.setCurrentRealQuantity(r);
-			productDTO.setSeasonalityProduct(seasonalityProductService.findSeasonalityProductsByProduct(product).get(0));
+			productDTO.setSeasonalityProduct(seasonalityProductService.findSeasonalityProductsByProduct(product).size() > 0 ? seasonalityProductService.findSeasonalityProductsByProduct(product).get(0) : null);
 			ret.add(productDTO);		
 		}
 
@@ -193,6 +193,7 @@ public class ProductService {
 		ProducerProductEntity pp = ppTemp;
 		RealQuantityEntity rqe = realQuantityRepository.findRealQuantity(ppTemp.getId());
 		if(rqe != null && pp != null) {
+			/*
 			rqe.setQuantity1((newProduct.getCurrentRealQuantity() == null || newProduct.getCurrentRealQuantity().getQuantity1() == null) ? (newProduct.getRealQuantities().size()==0 ? new BigDecimal(0) : newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity1()) : newProduct.getCurrentRealQuantity().getQuantity1());
 			rqe.setQuantity2((newProduct.getCurrentRealQuantity() == null || newProduct.getCurrentRealQuantity().getQuantity2()== null) ? (newProduct.getRealQuantities().size()==0 ? new BigDecimal(0) : newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity2()): newProduct.getCurrentRealQuantity().getQuantity2());
 			rqe.setQuantity3((newProduct.getCurrentRealQuantity() == null || newProduct.getCurrentRealQuantity().getQuantity3()== null) ? (newProduct.getRealQuantities().size()==0 ? new BigDecimal(0) : newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity3()) : newProduct.getCurrentRealQuantity().getQuantity3());
@@ -205,6 +206,42 @@ public class ProductService {
 			rqe.setQuantity10((newProduct.getCurrentRealQuantity() == null || newProduct.getCurrentRealQuantity().getQuantity10()== null) ? (newProduct.getRealQuantities().size()==0 ? new BigDecimal(0) : newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity10()) : newProduct.getCurrentRealQuantity().getQuantity10());
 			rqe.setQuantity11((newProduct.getCurrentRealQuantity() == null || newProduct.getCurrentRealQuantity().getQuantity11()== null) ? (newProduct.getRealQuantities().size()==0 ? new BigDecimal(0) : newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity11()) : newProduct.getCurrentRealQuantity().getQuantity11());
 			rqe.setQuantity12((newProduct.getCurrentRealQuantity() == null || newProduct.getCurrentRealQuantity().getQuantity12()== null) ? (newProduct.getRealQuantities().size()==0 ? new BigDecimal(0) : newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity12()) : newProduct.getCurrentRealQuantity().getQuantity12());			
+			*/
+			if(newProduct.getCurrentRealQuantity() != null) {
+				rqe.setQuantity1(newProduct.getCurrentRealQuantity().getQuantity1());
+				rqe.setQuantity2(newProduct.getCurrentRealQuantity().getQuantity2());
+				rqe.setQuantity3(newProduct.getCurrentRealQuantity().getQuantity3());
+				rqe.setQuantity4(newProduct.getCurrentRealQuantity().getQuantity4());
+				rqe.setQuantity5(newProduct.getCurrentRealQuantity().getQuantity5());
+				rqe.setQuantity6(newProduct.getCurrentRealQuantity().getQuantity6());
+				rqe.setQuantity7(newProduct.getCurrentRealQuantity().getQuantity7());
+				rqe.setQuantity8(newProduct.getCurrentRealQuantity().getQuantity8());
+				rqe.setQuantity9(newProduct.getCurrentRealQuantity().getQuantity9());
+				rqe.setQuantity10(newProduct.getCurrentRealQuantity().getQuantity10());
+				rqe.setQuantity11(newProduct.getCurrentRealQuantity().getQuantity11());
+				rqe.setQuantity12(newProduct.getCurrentRealQuantity().getQuantity12());
+				}
+			
+			else {
+				if(newProduct.getRealQuantities() != null && newProduct.getRealQuantities().size()>0) {
+					rqe.setQuantity1(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity1());
+					rqe.setQuantity2(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity2());
+					rqe.setQuantity3(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity3());
+					rqe.setQuantity4(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity4());
+					rqe.setQuantity5(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity5());
+					rqe.setQuantity6(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity6());
+					rqe.setQuantity7(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity7());
+					rqe.setQuantity8(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity8());
+					rqe.setQuantity9(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity9());
+					rqe.setQuantity10(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity10());
+					rqe.setQuantity11(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity11());
+					rqe.setQuantity12(newProduct.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity12());
+					
+				}
+				
+			}
+			
+			
 			return realQuantityRepository.save(rqe);
 		}
 		else {
@@ -251,6 +288,7 @@ public class ProductService {
 				ProducerProductEntity pp = producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producer.getId(), p.getId());
 				RealQuantityEntity rqe = realQuantityRepository.findRealQuantity(pp.getId());
 				if(rqe != null) {
+					/*
 					rqe.setQuantity1((p.getCurrentRealQuantity() == null || p.getCurrentRealQuantity().getQuantity1() == null) ? (p.getRealQuantities().size()==0 ? new BigDecimal(0) : p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity1()) : p.getCurrentRealQuantity().getQuantity1());
 					rqe.setQuantity2((p.getCurrentRealQuantity() == null || p.getCurrentRealQuantity().getQuantity2()== null) ? (p.getRealQuantities().size()==0 ? new BigDecimal(0) : p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity2()): p.getCurrentRealQuantity().getQuantity2());
 					rqe.setQuantity3((p.getCurrentRealQuantity() == null || p.getCurrentRealQuantity().getQuantity3()== null) ? (p.getRealQuantities().size()==0 ? new BigDecimal(0) : p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity3()) : p.getCurrentRealQuantity().getQuantity3());
@@ -263,6 +301,38 @@ public class ProductService {
 					rqe.setQuantity10((p.getCurrentRealQuantity() == null || p.getCurrentRealQuantity().getQuantity10()== null) ? (p.getRealQuantities().size()==0 ? new BigDecimal(0) : p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity10()) : p.getCurrentRealQuantity().getQuantity10());
 					rqe.setQuantity11((p.getCurrentRealQuantity() == null || p.getCurrentRealQuantity().getQuantity11()== null) ? (p.getRealQuantities().size()==0 ? new BigDecimal(0) : p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity11()) : p.getCurrentRealQuantity().getQuantity11());
 					rqe.setQuantity12((p.getCurrentRealQuantity() == null || p.getCurrentRealQuantity().getQuantity12()== null) ? (p.getRealQuantities().size()==0 ? new BigDecimal(0) : p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity12()) : p.getCurrentRealQuantity().getQuantity12());			
+					*/
+					if(p.getRealQuantities() != null && p.getRealQuantities().size()>0) {
+						rqe.setQuantity1(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity1());
+						rqe.setQuantity2(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity2());
+						rqe.setQuantity3(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity3());
+						rqe.setQuantity4(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity4());
+						rqe.setQuantity5(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity5());
+						rqe.setQuantity6(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity6());
+						rqe.setQuantity7(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity7());
+						rqe.setQuantity8(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity8());
+						rqe.setQuantity9(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity9());
+						rqe.setQuantity10(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity10());
+						rqe.setQuantity11(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity11());
+						rqe.setQuantity12(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity12());
+						
+					}
+					else {
+						if(p.getCurrentRealQuantity() != null) {
+						rqe.setQuantity1(p.getCurrentRealQuantity().getQuantity1());
+						rqe.setQuantity2(p.getCurrentRealQuantity().getQuantity2());
+						rqe.setQuantity3(p.getCurrentRealQuantity().getQuantity3());
+						rqe.setQuantity4(p.getCurrentRealQuantity().getQuantity4());
+						rqe.setQuantity5(p.getCurrentRealQuantity().getQuantity5());
+						rqe.setQuantity6(p.getCurrentRealQuantity().getQuantity6());
+						rqe.setQuantity7(p.getCurrentRealQuantity().getQuantity7());
+						rqe.setQuantity8(p.getCurrentRealQuantity().getQuantity8());
+						rqe.setQuantity9(p.getCurrentRealQuantity().getQuantity9());
+						rqe.setQuantity10(p.getCurrentRealQuantity().getQuantity10());
+						rqe.setQuantity11(p.getCurrentRealQuantity().getQuantity11());
+						rqe.setQuantity12(p.getCurrentRealQuantity().getQuantity12());
+						}
+					}
 					realQuantityRepository.save(rqe);
 				}
 				else {
