@@ -1,7 +1,7 @@
 #
 # A fatal error has been detected by the Java Runtime Environment:
 #
-#  SIGSEGV (0xb) at pc=0x00007fa183641ea1, pid=8400, tid=8417
+#  SIGSEGV (0xb) at pc=0x00007f80365fdea1, pid=10763, tid=10780
 #
 # JRE version: OpenJDK Runtime Environment (11.0.14+9) (build 11.0.14+9-post-Debian-1deb10u1)
 # Java VM: OpenJDK 64-Bit Server VM (11.0.14+9-post-Debian-1deb10u1, mixed mode, sharing, tiered, compressed oops, g1 gc, linux-amd64)
@@ -16,6 +16,6 @@
 
 ---------------  S U M M A R Y ------------
 
-Command Line: -agentlib:jdwp=transport=dt_socket,suspend=y,address=localhost:45663 -javaagent:/home/pan/eclipse/jee-2020-09/eclipse/configuration/org.eclipse.osgi/401/0/.cp/lib/javaagent-shaded.jar -Dfile.encoding=UTF-8 com.cinqc.maraichage.MaraichageApplication
+Command Line: -agentlib:jdwp=transport=dt_socket,suspend=y,address=localhost:36911 -javaagent:/home/pan/eclipse/jee-2020-09/eclipse/configuration/org.eclipse.osgi/401/0/.cp/lib/javaagent-shaded.jar -Dfile.encoding=UTF-8 com.cinqc.maraichage.MaraichageApplication
 
 Host: 

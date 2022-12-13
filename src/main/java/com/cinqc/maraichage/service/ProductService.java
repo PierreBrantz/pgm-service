@@ -1,6 +1,5 @@
 package com.cinqc.maraichage.service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -96,7 +95,7 @@ public class ProductService {
 			productDTO.setProductOrigins(productOriginService.findAllProductOrigins());
 			productDTO.setProductTypes(productTypeService.findAllProductTypes());
 			productDTO.setCurrentRealQuantity(r);
-			productDTO.setSeasonalityProduct(seasonalityProductService.findSeasonalityProductsByProduct(product).size() > 0 ? seasonalityProductService.findSeasonalityProductsByProduct(product).get(0) : null);
+			productDTO.setSeasonalityProduct(seasonalityProductService.findSeasonalityProductsByProduct(product).size() > 0 ? seasonalityProductService.findSeasonalityProductsByProduct(product).get(0) : new SeasonalityProductEntity());
 			ret.add(productDTO);		
 		}
 
@@ -280,9 +279,9 @@ public class ProductService {
 
 
 	public void updateProducts(List<ProductDTO> products) {
-		for(ProductDTO p : products) {
-			if(p.getSeasonalityProduct() == null) {
-				p.setSeasonalityProduct(new SeasonalityProductEntity());
+		for(ProductDTO p : products) {		
+			if(p.getSeasonalityProduct() != null) {
+			seasonalityProductService.save(p.getSeasonalityProduct());
 			}
 			for(ProducerEntity producer : p.getProducers()) {
 				ProducerProductEntity pp = producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producer.getId(), p.getId());
@@ -365,8 +364,12 @@ public class ProductService {
 
 	public ProductEntity addProductWithName(String productName) {
 		ProductEntity product = new ProductEntity();
-		product.setName(productName);
-		return repository.save(product);
+		product.setName(productName);		
+		product = repository.save(product);
+		SeasonalityProductEntity sp = new SeasonalityProductEntity();
+		sp.setProductId(product.getId());
+		seasonalityProductService.save(sp);
+		return product;
 
 	}
 

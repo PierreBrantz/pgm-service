@@ -1,5 +1,4 @@
 package com.cinqc.maraichage.controller;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +24,7 @@ import com.cinqc.maraichage.jwt.JwtUtils;
 import com.cinqc.maraichage.model.ERole;
 import com.cinqc.maraichage.model.RoleEntity;
 import com.cinqc.maraichage.model.UserEntity;
+import com.cinqc.maraichage.payload.request.ChangePasswordRequest;
 import com.cinqc.maraichage.payload.request.LoginRequest;
 import com.cinqc.maraichage.payload.request.SignupRequest;
 import com.cinqc.maraichage.payload.response.JwtResponse;
@@ -56,6 +57,8 @@ public class AuthController {
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		
+		
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateJwtToken(authentication);
@@ -71,7 +74,24 @@ public class AuthController {
 												 userDetails.getEmail(), 
 												 roles));
 	}
-
+	
+	@PostMapping("/changePassword")
+	public ResponseEntity<?> changePwd(@Valid @RequestBody ChangePasswordRequest changePasswordRequest ) {
+		try {
+			authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(changePasswordRequest.getUsername(), changePasswordRequest.getOldPassword()));
+			
+			UserEntity user = userRepository.findByUsername(changePasswordRequest.getUsername()).get();
+			user.setPassword(encoder.encode(changePasswordRequest.getNewPassword()));
+			userRepository.save(user);
+			 return ResponseEntity.ok().body("Le mot de passe a été modifié!");
+			
+		}
+		catch(AuthenticationException e) {
+			return ResponseEntity.badRequest().body("Erreur: identifiants incorrects!");
+		}
+	}
+	
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -126,4 +146,5 @@ public class AuthController {
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
+
 }

@@ -22,4 +22,8 @@ public class SeasonalityProductService {
 		return repository.findByProductId(product.getId());
 	}
 	
+	public SeasonalityProductEntity save(SeasonalityProductEntity sp) {
+		return repository.save(sp);
+	}
+	
 }
