@@ -26,5 +26,8 @@ public class SeasonalityEntity {
 	
 	@Column(name = "percent")
 	private float percent;
+	
+	@Column(name = "color")
+	private String color;
 
 }

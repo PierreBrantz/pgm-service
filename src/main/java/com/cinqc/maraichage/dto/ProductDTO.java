@@ -43,7 +43,7 @@ public class ProductDTO {
 	private SeasonalityProductEntity seasonalityProduct;
 	
 	private List<ProducerEntity> producers = new ArrayList<>();
-
+	
 	private ProductTypeEntity productType;
 
 	private ProductFamilyEntity productFamily;

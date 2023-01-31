@@ -7,12 +7,12 @@ import lombok.Setter;
 @Setter
 public class SeasonalityDTO {
 
-	private long id;
-	
+	private long id;	
 
-	private String name;
-	
+	private String name;	
 
 	private float percent;
+	
+	private String color;
 
 }

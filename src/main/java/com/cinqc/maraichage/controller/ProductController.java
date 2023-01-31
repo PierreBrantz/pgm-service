@@ -83,7 +83,7 @@ public class ProductController {
 	    Type listOfMyClassObject = new TypeToken<ProductDTO>() {}.getType();
 	    ProductDTO product = gson.fromJson(body, listOfMyClassObject);
 	
-		return service.updateRealProduct(productId, producerId, product);
+		return service.updateRealProduct( producerId, product);
 	}
 	
 	@RequestMapping(value = "/{productId}/producer/{producerId}/date/{date}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

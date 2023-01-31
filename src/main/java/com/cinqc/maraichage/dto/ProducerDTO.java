@@ -6,6 +6,7 @@ import com.cinqc.maraichage.model.CertificateEntity;
 import com.cinqc.maraichage.model.ProducerOriginEntity;
 import com.cinqc.maraichage.model.ProducerTypeEntity;
 import com.cinqc.maraichage.model.ProductEntity;
+import com.cinqc.maraichage.model.RealQuantityEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -49,4 +50,6 @@ public class ProducerDTO {
 	private ProducerOriginEntity producerOrigin;
 	
 	private Set<ProductEntity> products; 
+	
+	private RealQuantityEntity realQuantity;
 }

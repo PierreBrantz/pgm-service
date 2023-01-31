@@ -14,8 +14,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -91,7 +93,8 @@ public class ProducerEntity {
     @JoinColumn(name = "producer_origin_id", referencedColumnName = "id")
 	private ProducerOriginEntity producerOrigin;
 	
-	
-	private transient RealQuantityEntity realQuantity;
+	@JsonInclude()
+	@Transient
+	private RealQuantityEntity realQuantity;
 
 }
