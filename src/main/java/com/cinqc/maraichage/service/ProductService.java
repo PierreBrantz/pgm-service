@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.transaction.Transactional;
@@ -55,8 +57,124 @@ public class ProductService {
 	@Autowired
 	WeeklyProposalRepository weeklyProposalRepository;
 
+	public List<ProductDTO> findAllProducts(){
+		/*
+		List<ProductDTO> ret = new ArrayList<>();
 
+		for(ProducerEntity producerEntity : producerService.findAllProducerEntities()) {
+			ret = Stream.concat(ret.stream(),findAllProducts(producerEntity.getId()).stream())
+                    .collect(Collectors.toList());
+		}
+		 */
+		return MapperUtil.mapList(findAllProducts(null), ProductDTO.class);
+	}
+	/*
+	public List<ProductDTO> findAllProducts(Long producerId){
+		List<ProductDTO> ret = new ArrayList<>();
+		Iterable<ProductEntity> products = repository.findAll();
+		ProducerEntity producer = producerService.findProducerById(producerId);
+		for(ProductEntity product : products) {
+			ProductDTO productDTO = MapperUtil.getModelMapperInstance().map(product, ProductDTO.class);
+			ProducerProductEntity ppe = producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producerId, product.getId());
+			RealQuantityEntity r ;
+			if(ppe != null) {
+				r = realQuantityRepository.findRealQuantity(ppe.getId());	
+				producer.setRealQuantity(r);
+				productDTO.getProducers().stream().filter(p->p.getId() == producerId).findAny().ifPresent(p->p.setRealQuantity(r));
+				if(productDTO.getProducers().stream().filter(p->p.getId() == producerId).count() == 0 )
+				{
+					productDTO.getProducers().add(producer);
+				}
+				productDTO.setCurrentRealQuantity(r);
+			}
+			else {
+				ppe = new ProducerProductEntity();
+				ppe.setProductId(product.getId());
+				ppe.setProducerId(producer.getId());
+				producerProductRepository.save(ppe);
+				productDTO.setCurrentRealQuantity(new RealQuantityEntity());
+				productDTO.getProducers().stream().filter(p->p.getId() == producerId).findAny().ifPresent(p->p.setRealQuantity(new RealQuantityEntity()));
+			}
+
+			productDTO.setSeasonalities(seasonalityService.findAllSeasons());
+			productDTO.setSeasonalityProduct(seasonalityProductService.findSeasonalityProductsByProduct(product).size() > 0 ? seasonalityProductService.findSeasonalityProductsByProduct(product).get(0) : new SeasonalityProductEntity());
+			productDTO.setRealQuantities(realQuantityRepository.findAllRealQuantityByProductId(product.getId()));	
+			ret.add(productDTO);
+		}
+		return ret;
+
+
+	}
+	 */
+
+	/*
 	public Iterable<ProductDTO> findAllProducts(Long producerId) {	
+		List<ProductDTO> ret = new ArrayList<>();
+		List<ProductEntity> products = new ArrayList<>();
+		products = repository.findByOrderByNameAsc();
+		if(producerId != null) {	
+			ProducerEntity producer = producerService.findProducerById(producerId);
+			products = products.stream().filter(o -> (o.getProductLabel() != null ?  o.getProductLabel().getName() : "").equalsIgnoreCase(producer.getCertificate() != null ? producer.getCertificate().getName() : "")).collect(Collectors.toList());
+			products = products.stream().filter(o -> (o.getProductType() != null ?  o.getProductType().getName() : "").equalsIgnoreCase(producer.getProducerType() != null ? producer.getProducerType().getName() : "")).collect(Collectors.toList());
+			products = products.stream().filter(o -> (o.getProductOrigin() != null ?  o.getProductOrigin().getName() : "").equalsIgnoreCase(producer.getProducerOrigin() != null ? producer.getProducerOrigin().getName() : "")).collect(Collectors.toList());}
+
+		RealQuantityEntity r = null;
+		for(ProductEntity product : products) {
+
+
+			Set<ProducerEntity> producers =new HashSet<>();			
+			for(ProducerEntity producer : product.getProducers()) {	
+				ProducerProductEntity ppe = producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producer.getId(), product.getId());
+				if(ppe == null) {
+					ppe = new ProducerProductEntity();
+					ppe.setProductId(product.getId());
+					ppe.setProducerId(producer.getId());
+					producerProductRepository.save(ppe);
+
+				}
+
+				r = realQuantityRepository.findRealQuantity(ppe.getId());
+
+				if(r != null) {
+					r.setProducerId(producer.getId());
+					producer.setRealQuantity(r);
+
+
+				}
+
+				else {
+					r = new RealQuantityEntity();
+					r.setYearOfReference(0);
+					r.setProducerId(producer.getId());
+					r.setProducerProductId(ppe.getId());
+					realQuantityRepository.save(r);
+					producer.setRealQuantity(r);
+				}
+
+
+				producers.add(producer);
+			}
+			product.setProducers(producers);
+
+			ProductDTO productDTO = MapperUtil.getModelMapperInstance().map(product, ProductDTO.class);
+			productDTO.setRealQuantities(realQuantityRepository.findAllRealQuantityByProductId(product.getId()));	
+			productDTO.setSeasonalities(seasonalityService.findAllSeasons());
+			productDTO.setProductLabels(productLabelService.findAllProductLabels());
+			productDTO.setProductOrigins(productOriginService.findAllProductOrigins());
+			productDTO.setProductTypes(productTypeService.findAllProductTypes());
+			productDTO.setCurrentRealQuantity(r);
+			productDTO.setSeasonalityProduct(seasonalityProductService.findSeasonalityProductsByProduct(product).size() > 0 ? seasonalityProductService.findSeasonalityProductsByProduct(product).get(0) : new SeasonalityProductEntity());
+			ret.add(productDTO);		
+		}
+
+
+
+		//return	MapperUtil.mapList(products, ProductDTO.class);
+		return ret;
+	}
+	 */
+
+	public List<ProductDTO> findAllProducts(Long producerId) {	
 		List<ProductDTO> ret = new ArrayList<>();
 		List<ProductEntity> products = new ArrayList<>();
 		products = repository.findByOrderByNameAsc();
@@ -71,11 +189,12 @@ public class ProductService {
 			for(ProducerEntity producer : product.getProducers()) {	
 				r = realQuantityRepository.findRealQuantity(producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producer.getId(), product.getId()).getId());
 				if(r != null) {
-				r.setProducerId(producer.getId());
-				producer.setRealQuantity(r);
-				
-				
+					r.setProducerId(producer.getId());
+					producer.setRealQuantity(r);
+
+
 				}
+
 				else {
 					r = new RealQuantityEntity();
 					r.setYearOfReference(0);
@@ -84,6 +203,7 @@ public class ProductService {
 					realQuantityRepository.save(r);
 					producer.setRealQuantity(r);
 				}
+
 				producers.add(producer);
 			}
 			product.setProducers(producers);
@@ -165,22 +285,48 @@ public class ProductService {
 
 
 	public ProductDTO updateProduct(long id, ProductDTO newProduct){
+	/*
 		ProductDTO product = findProductById(id);
-		if(newProduct.getQuantities() != null) {		
+		if(newProduct.getQuantities() != null && newProduct.getQuantities().size() > 0) {		
 			newProduct.getQuantities().get(0).setProductId(id);
 			product.setQuantities(newProduct.getQuantities());
 
 		}
 
+*/
 
-
-		ProductEntity productEntity = MapperUtil.getModelMapperInstance().map(product, ProductEntity.class);
+		ProductEntity productEntity = MapperUtil.getModelMapperInstance().map(newProduct, ProductEntity.class);
 
 		return MapperUtil.getModelMapperInstance().map(repository.save(productEntity),ProductDTO.class);
 	}
-	
-	public RealQuantityEntity updateRealProduct(Long producerId, ProductDTO product) {		
-		return realQuantityRepository.save(product.getProducers().stream().filter(o -> o.getId() == producerId).findFirst().get().getRealQuantity());
+
+	public List<ProductDTO> updateRealProduct(Long producerId, ProductDTO product) {		
+		ProducerProductEntity ppe = producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producerId, product.getId());
+		if(ppe == null) {
+			ppe = new ProducerProductEntity();
+			ppe.setProducerId(producerId);
+			ppe.setProductId(product.getId());
+			producerProductRepository.save(ppe);
+		}
+
+
+		RealQuantityEntity realQuantity = realQuantityRepository.findRealQuantity(ppe.getId());
+
+		Optional<RealQuantityEntity> rqe = product.getRealQuantities().stream().filter(o -> o.getProducerId() == producerId).findFirst();
+		if(rqe.get() == null) {
+			return null;
+		}
+		if(realQuantity == null) {
+
+			realQuantity = new RealQuantityEntity(0, ppe.getId(),rqe.get().getQuantity1(), rqe.get().getQuantity2(), rqe.get().getQuantity3(), rqe.get().getQuantity4(),rqe.get().getQuantity5(),rqe.get().getQuantity6(),rqe.get().getQuantity7()
+					,rqe.get().getQuantity8(),rqe.get().getQuantity9(),rqe.get().getQuantity10(),rqe.get().getQuantity11(),rqe.get().getQuantity12());
+
+		}
+		else {
+			realQuantity = rqe.get();
+		}
+		 realQuantityRepository.save(realQuantity);
+		 return findAllProducts();
 	}	
 
 
@@ -190,93 +336,39 @@ public class ProductService {
 		List<WeeklyProposalEntity> wpes = newProduct.getWeeklyProposals();
 		for(WeeklyProposalEntity wpe : wpes) {
 			if(wpe != null) {
-				
-					if(weeklyProposalRepository.findByProducerProductIdAndDate(pp.getId(), wpe.getDate()) != null) {
-						WeeklyProposalEntity change = weeklyProposalRepository.findByProducerProductIdAndDate(pp.getId(), wpe.getDate());
-						change.setQuantity(wpe.getQuantity());
-						change.setRealQuantity(wpe.getRealQuantity());
-						weeklyProposalRepository.save(change);
-					}
 
-					else {
-						wpe.setProducerProductId(pp.getId());
-						weeklyProposalRepository.save(wpe);
-					
+				if(weeklyProposalRepository.findByProducerProductIdAndDate(pp.getId(), wpe.getDate()) != null) {
+					WeeklyProposalEntity change = weeklyProposalRepository.findByProducerProductIdAndDate(pp.getId(), wpe.getDate());
+					change.setQuantity(wpe.getQuantity());
+					change.setRealQuantity(wpe.getRealQuantity());
+					weeklyProposalRepository.save(change);
+				}
+
+				else {
+					wpe.setProducerProductId(pp.getId());
+					weeklyProposalRepository.save(wpe);
+
 				}
 			}
 		}
 		return new ArrayList<WeeklyProposalEntity>();
 	}
-	
+
 	public void updateProducts(List<ProductDTO> products) {
 		for(ProductDTO product : products) {
 			if(product.getSeasonalityProduct() != null) {
 				seasonalityProductService.save(product.getSeasonalityProduct());
-				}
+			}
 			for(ProducerEntity producer : product.getProducers()) {
 				updateRealProduct(producer.getId(), product);
+				
 			}
-		}
-		
-	}
-
-/*
-	public void updateProducts(List<ProductDTO> products) {
-		for(ProductDTO p : products) {		
-			if(p.getSeasonalityProduct() != null) {
-			seasonalityProductService.save(p.getSeasonalityProduct());
-			}
-			for(ProducerEntity producer : p.getProducers()) {
-				ProducerProductEntity pp = producerProductRepository.findTopByProducerIdAndProductIdOrderByIdDesc(producer.getId(), p.getId());
-				RealQuantityEntity rqe = realQuantityRepository.findRealQuantity(pp.getId());
-				if(rqe != null) {
-		 		if(p.getRealQuantities() != null && p.getRealQuantities().size()>0) {
-						rqe.setQuantity1(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity1());
-						rqe.setQuantity2(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity2());
-						rqe.setQuantity3(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity3());
-						rqe.setQuantity4(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity4());
-						rqe.setQuantity5(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity5());
-						rqe.setQuantity6(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity6());
-						rqe.setQuantity7(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity7());
-						rqe.setQuantity8(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity8());
-						rqe.setQuantity9(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity9());
-						rqe.setQuantity10(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity10());
-						rqe.setQuantity11(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity11());
-						rqe.setQuantity12(p.getRealQuantities().stream().filter(o -> o.getProducerProductId() == pp.getId()).findFirst().get().getQuantity12());
-						
-					}
-					else {
-						if(p.getCurrentRealQuantity() != null) {
-						rqe.setQuantity1(p.getCurrentRealQuantity().getQuantity1());
-						rqe.setQuantity2(p.getCurrentRealQuantity().getQuantity2());
-						rqe.setQuantity3(p.getCurrentRealQuantity().getQuantity3());
-						rqe.setQuantity4(p.getCurrentRealQuantity().getQuantity4());
-						rqe.setQuantity5(p.getCurrentRealQuantity().getQuantity5());
-						rqe.setQuantity6(p.getCurrentRealQuantity().getQuantity6());
-						rqe.setQuantity7(p.getCurrentRealQuantity().getQuantity7());
-						rqe.setQuantity8(p.getCurrentRealQuantity().getQuantity8());
-						rqe.setQuantity9(p.getCurrentRealQuantity().getQuantity9());
-						rqe.setQuantity10(p.getCurrentRealQuantity().getQuantity10());
-						rqe.setQuantity11(p.getCurrentRealQuantity().getQuantity11());
-						rqe.setQuantity12(p.getCurrentRealQuantity().getQuantity12());
-						}
-					}
-					realQuantityRepository.save(rqe);
-				}
-				else {
-
-					RealQuantityEntity realProduct = ((p.getRealQuantities().size()>0 && p.getRealQuantities().get(0) != null) ? p.getRealQuantities().get(0) :p.getCurrentRealQuantity() );
-		
-					realProduct.setProducerProductId(pp.getId());
-					 realQuantityRepository.save(realProduct);
-				}
-			}
-			
+			updateProduct(product.getId(), product);
 		}
 
-		repository.saveAll(MapperUtil.mapList(products, ProductEntity.class));
 	}
-	*/
+
+
 
 
 	public static <T> List<T> toList(final Iterable<T> iterable) {

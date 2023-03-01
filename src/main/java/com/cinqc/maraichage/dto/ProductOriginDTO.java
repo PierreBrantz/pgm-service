@@ -11,4 +11,6 @@ public class ProductOriginDTO {
 	
 
 	private String name;
+	
+	private boolean visible;
 }

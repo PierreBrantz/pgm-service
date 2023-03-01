@@ -23,4 +23,7 @@ public class ProductTypeEntity {
 	
 	@Column(name = "name")
 	private String name;
+		
+	@Column(name = "visible")
+	private boolean visible;
 }

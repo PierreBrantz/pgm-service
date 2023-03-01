@@ -22,5 +22,8 @@ public class ProductOriginEntity {
 	private Long id;
 	
 	@Column(name = "name")
-	private String name;
+	private String name;	
+	
+	@Column(name = "visible")
+	private boolean visible;
 }

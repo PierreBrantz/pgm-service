@@ -39,8 +39,13 @@ public class ProductController {
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public Iterable<ProductDTO> findAllProducts(@RequestParam(required = false) Long producerId) {		
-		return service.findAllProducts(producerId);
+	public Iterable<ProductDTO> findAllProducts(@RequestParam(required = false) Long producerId) {
+		if(producerId != null) {
+			return service.findAllProducts(producerId);
+		}
+		else {
+			return service.findAllProducts();
+		}
 		
 	}
 
@@ -77,7 +82,7 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/{productId}/producer/{producerId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody RealQuantityEntity updateRealProduct( @RequestBody String body, @PathVariable Long productId, @PathVariable Long producerId) {	
+	public @ResponseBody List<ProductDTO> updateRealProduct( @RequestBody String body, @PathVariable Long productId, @PathVariable Long producerId) {	
 		final GsonBuilder builder = new GsonBuilder();
 	    final Gson gson = builder.create();
 	    Type listOfMyClassObject = new TypeToken<ProductDTO>() {}.getType();

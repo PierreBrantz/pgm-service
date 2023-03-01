@@ -11,4 +11,6 @@ public class ProductFamilyDTO {
 	
 
 	private String name;
+	
+	private boolean visible;
 }

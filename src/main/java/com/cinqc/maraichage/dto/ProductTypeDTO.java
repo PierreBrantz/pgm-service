@@ -11,4 +11,6 @@ public class ProductTypeDTO {
 	
 
 	private String name;
+	
+	private boolean visible;
 }

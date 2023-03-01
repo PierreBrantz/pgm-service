@@ -23,4 +23,7 @@ public class ProductFamilyEntity {
 	
 	@Column(name = "name")
 	private String name;
+	
+	@Column(name = "visible")
+	private boolean visible;
 }
